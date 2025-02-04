@@ -3,22 +3,24 @@ import googleLogo from '../assets/googleLogo.jpeg';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../hooks/useAuthContext'; // Use AuthContext
 
-const Login = ({ loadUser }) => {
+const Login = () => {
   const [signinEmail, setEmail] = useState('');
   const [Password, setPass] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { user, dispatch } = useAuthContext(); // Get user and dispatch from context
 
-
-
-  useEffect(()=>{
+  useEffect(() => {
+    // Check if a user is already logged in from localStorage
     const storedUser = localStorage.getItem('user');
-    if(storedUser){
-      loadUser(JSON.parse(storedUser));
-      navigate('/home');
+    if (storedUser) {
+      // If user exists in localStorage, update the context
+      dispatch({ type: 'login', payload: JSON.parse(storedUser) });
+      navigate('/'); // Redirect to home page
     }
-  },[loadUser , navigate]);
+  }, [dispatch, navigate]);
 
   const setEmailFunction = (event) => {
     setEmail(event.target.value);
@@ -30,7 +32,7 @@ const Login = ({ loadUser }) => {
 
   const SignIn = async (event) => {
     event.preventDefault();
-    setLoading(true);  // Start loading state
+    setLoading(true); // Start loading state
     try {
       const response = await fetch('http://localhost:3000/user/login', {
         method: 'POST',
@@ -45,12 +47,17 @@ const Login = ({ loadUser }) => {
 
       if (response.ok) {
         toast.success('Login successful!', { autoClose: 1500 });
+        
+        console.log(data.user._id)
 
+        // Save token and user to localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
 
-        loadUser(data);
-        setTimeout(() => navigate('/home'), 1500);
+        // Dispatch the login action to update context
+        dispatch({ type: 'login', payload: data.user });
+
+        setTimeout(() => navigate('/'), 1000);
       } else {
         toast.error(data.message || 'Invalid inputs');
       }
@@ -58,7 +65,7 @@ const Login = ({ loadUser }) => {
       toast.error('Something went wrong. Please try again.');
       console.log(err);
     } finally {
-      setLoading(false);  // Stop loading state
+      setLoading(false); // Stop loading state
     }
   };
 
@@ -111,7 +118,9 @@ const Login = ({ loadUser }) => {
 
         <div className="text-center text-gray-400">
           Don't have an account?
-          <span className="font-bold text-black ml-1 cursor-pointer">
+          <span
+            onClick={() => navigate('/register')} 
+            className="font-bold text-black ml-1 cursor-pointer">
             Sign up for free
           </span>
         </div>

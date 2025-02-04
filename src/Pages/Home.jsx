@@ -1,35 +1,43 @@
 import React, { useEffect, useState } from 'react';
+import NavBar from '../Components/NavBar';
+import { useNavigate } from 'react-router-dom';
+import DisplayRecipes from '../Components/displayRecipes';
+import Footer from '../Components/Footer';
+import Hero from '../Components/Hero';
+import { useAuthContext } from '../hooks/useAuthContext';
 
-const HomePage = () => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    // Check if user data is in localStorage on page load
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser)); // Set the user state if data is found
+const Home = () => {
+  const {user} = useAuthContext()
+  const navigate = useNavigate();
+  useEffect(()=>{
+    if(!user){
+      navigate('/login');
     }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null); // Clear user state after logout
-  };
-
+  },[user,navigate])
+ 
   return (
-    <div className="home-page">
-      <h1>Welcome to the Home Page!</h1>
-      {user ? (
-        <>
-          <p>Hello, {user.username}!</p>
-          <button onClick={handleLogout}>Logout</button>
-        </>
-      ) : (
-        <p>Please log in to continue.</p>
-      )}
+    <div className="home-page flex flex-col min-h-screen bg-gray-100">
+      {/* Fixed Navbar */}
+      <NavBar />
+      
+      {/* Add margin-top to avoid overlap */}
+      <div className="mt-24">
+        <Hero user={user} />
+      </div>
+
+      {/* Main Content */}
+      <main className="flex flex-col items-center justify-center flex-grow px-6 sm:px-8 md:px-12 lg:px-16 mt-24">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-800 text-center mb-8">
+          Here are some popular recipes: 🍽️
+        </h1>
+        <DisplayRecipes />
+      </main>
+
+      <div className="mt-4">
+        <Footer />
+      </div>
     </div>
   );
 };
 
-export default HomePage;
+export default Home;

@@ -1,54 +1,38 @@
-// import React from 'react';
-// import logo from '../assets/logo.png';
-// import { IoReorderThreeSharp } from "react-icons/io5";
-
-
-// const NavBar = () => {
-//   return (
-//     <>
-//       <nav className="bg-white flex flex-col md:flex-row justify-between items-center p-4 shadow-md h-auto md:h-[5vw]">
-//         {/* Logo */}
-//         <img
-//           src={logo}
-//           alt="logo"
-//           className="w-18 h-12 md:h-[5vw] mb-4 md:mb-0"
-//         />
-
-//         {/* Navigation Links and Sign Out Button */}
-//         <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center w-full max-w-4xl mx-auto">
-//           {/* Centered Navigation Links */}
-//           <ul className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 flex-grow">
-//             <li className="hover:text-gray-400 transition-colors duration-200">
-//               <a href="#" className="text-gray-700">Profile</a>
-//             </li>
-//             <li className="hover:text-gray-400 transition-colors duration-200">
-//               <a href="#" className="text-gray-700">Own Recipes</a>
-//             </li>
-//             <li className="hover:text-gray-400 transition-colors duration-200">
-//               <a href="#" className="text-gray-700">Search</a>
-//             </li>
-//           </ul>
-
-//           {/* Sign Out Button */}
-//           <button className="bg-[#a6c1ee] text-white px-5 py-2 hover:bg-[#87acec] rounded-full transition-colors duration-200">
-//             Sign out
-//           </button>
-//         </div>
-//       </nav>
-//     </>
-//   );
-// };
-
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import { CiSearch, CiShoppingCart } from 'react-icons/ci';
 import { CgProfile } from 'react-icons/cg';
 import { IoMdMenu, IoMdClose } from "react-icons/io";
+import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const NavBar = () => {
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const profileMenuRef = useRef(null);
+  const navigate = useNavigate();
+  const {user , dispatch} = useAuthContext();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    dispatch({type:'logout'});
+    navigate('/login');
+  };
+
+ 
+
+  // Close Profile Menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setProfileMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <nav className="fixed w-full top-0 z-50 bg-gray-900 text-white shadow-lg left-0 h-20 flex items-center">
@@ -61,45 +45,58 @@ const NavBar = () => {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-8">
-          
-          <NavLink to="/collection" className="hover:text-green-300 transition duration-300">
-            Collection
+          <NavLink to="/home" className="hover:text-green-300 transition duration-300">
+            Home
           </NavLink>
-          <NavLink to="/about" className="hover:text-green-300 transition duration-300">
-            About
+          <NavLink to="/recipes" className="hover:text-green-300 transition duration-300">
+            Recipes
           </NavLink>
-          <NavLink to="/contact" className="hover:text-green-300 transition duration-300">
-            Contact
+          <NavLink to="/friends" className="hover:text-green-300 transition duration-300">
+            Add Friends
           </NavLink>
         </div>
 
         {/* Icons (Search, Profile, Cart) */}
         <div className="flex items-center space-x-6">
           {/* Search Button */}
-          <button className="text-xl hover:bg-white hover:text-green-300 transition duration-300 rounded-md p-2">
-            <CiSearch className="transition duration-300 hover:text-black" />
+          <button className="text-xl hover:bg-gray-700 transition duration-300 rounded-md p-2 focus:outline-none">
+            <CiSearch />
           </button>
 
           {/* Profile Icon */}
-          <div className="relative">
+          <div className="relative" ref={profileMenuRef}>
             <button
               onClick={() => setProfileMenuOpen(!isProfileMenuOpen)}
-              className="text-xl hover:bg-white transition duration-300 rounded-md p-2"
+              className="text-xl hover:bg-gray-700 transition duration-300 rounded-md p-2 focus:outline-none"
             >
-              <CgProfile className="transition duration-300 hover:text-black" />
+              <CgProfile />
             </button>
 
-            {isProfileMenuOpen && (
+            {isProfileMenuOpen && user && (
               <div className="absolute right-0 mt-2 w-48 bg-white text-black shadow-lg rounded-lg py-2">
-                <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
+                <Link to={`/userprofile/:${user._id}`} className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
                   My Profile
                 </Link>
-                <Link to="/orders" className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
-                  Own Recipes
+                <Link to="/my-recipes" className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
+                  My Recipes
                 </Link>
-                <button className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
+                <button 
+                  onClick={handleLogout}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                >
                   Logout
                 </button>
+              </div>
+            )}
+            {isProfileMenuOpen && !user &&(
+              <div className="absolute right-0 mt-2 w-48 bg-white text-black shadow-lg rounded-lg py-2">
+                <Link to={`/login`} className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
+                  login
+                </Link>
+                <Link to="/register" className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
+                  create a new account
+                </Link>
+                
               </div>
             )}
           </div>
@@ -107,18 +104,21 @@ const NavBar = () => {
           {/* Cart Icon */}
           <div className="relative flex">
             <NavLink to="/cart" className="hover:text-green-300 transition duration-300">
-              <button className="text-xl hover:bg-white hover:text-green-300 transition duration-300 rounded-md p-2">
-                <CiShoppingCart className="transition duration-300 hover:text-black" />
+              <button className="text-xl hover:bg-gray-700 transition duration-300 rounded-md p-2 focus:outline-none">
+                <CiShoppingCart />
               </button>
               <span className="absolute top-0 right-0 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center bg-red-500">
-                55
+                5
               </span>
             </NavLink>
           </div>
 
           {/* Mobile Menu Toggle */}
           <div className="md:hidden">
-            <button onClick={() => setMobileMenuOpen(!isMobileMenuOpen)} className="text-2xl focus:outline-none">
+            <button 
+              onClick={() => setMobileMenuOpen(!isMobileMenuOpen)} 
+              className="text-2xl focus:outline-none"
+            >
               {isMobileMenuOpen ? <IoMdClose /> : <IoMdMenu />}
             </button>
           </div>
@@ -128,16 +128,29 @@ const NavBar = () => {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="absolute top-20 left-0 w-full bg-gray-900 z-50 h-screen md:hidden flex flex-col items-center mt-4 space-y-6">
-          
-          <NavLink to="/collection" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-green-300 text-lg">
-            Collection
+          <NavLink to="/" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-green-300 text-lg">
+            Home
           </NavLink>
-          <NavLink to="/about" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-green-300 text-lg">
-            About
+          <NavLink to="/recipes" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-green-300 text-lg">
+            Recipes
           </NavLink>
-          <NavLink to="/contact" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-green-300 text-lg">
-            Contact
+          <NavLink to="/friends" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-green-300 text-lg">
+            Add Friends
           </NavLink>
+          {user && (
+            <NavLink to={`/userprofile/${user._id}`} onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-green-300 text-lg">
+              My Profile
+            </NavLink>
+          )}
+          <NavLink to="/cart" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-green-300 text-lg">
+            Cart
+          </NavLink>
+          <button 
+            onClick={handleLogout} 
+            className="text-red-400 hover:text-red-500 text-lg"
+          >
+            Logout
+          </button>
         </div>
       )}
     </nav>
