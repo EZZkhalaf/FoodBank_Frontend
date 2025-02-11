@@ -6,10 +6,12 @@ import { CgProfile } from 'react-icons/cg';
 import { IoMdMenu, IoMdClose } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
+import NavSearchBox from './NavSearchBox';
 
 const NavBar = () => {
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen , setSearchOpen] = useState(false);
   const profileMenuRef = useRef(null);
   const navigate = useNavigate();
   const {user , dispatch} = useAuthContext();
@@ -45,23 +47,36 @@ const NavBar = () => {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-8">
-          <NavLink to="/home" className="hover:text-green-300 transition duration-300">
+          <NavLink to="/" className="hover:text-green-300 transition duration-300">
             Home
           </NavLink>
-          <NavLink to="/recipes" className="hover:text-green-300 transition duration-300">
+          <NavLink to="/findRecipes" className="hover:text-green-300 transition duration-300">
             Recipes
           </NavLink>
           <NavLink to="/friends" className="hover:text-green-300 transition duration-300">
-            Add Friends
+            empty
           </NavLink>
         </div>
 
         {/* Icons (Search, Profile, Cart) */}
         <div className="flex items-center space-x-6">
-          {/* Search Button */}
-          <button className="text-xl hover:bg-gray-700 transition duration-300 rounded-md p-2 focus:outline-none">
-            <CiSearch />
-          </button>
+
+
+         
+          <div className="relative">
+            <button 
+              onClick={() => setSearchOpen(true)}
+              className="text-xl bg-gray-800 hover:bg-gray-700 transition-all duration-300 rounded-full p-3 shadow-md border border-gray-600 focus:ring-2 focus:ring-green-400 focus:outline-none"
+            >
+              <CiSearch className="text-white" />
+            </button>
+
+            {searchOpen && (
+              <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-[300px] bg-white p-3 rounded-md shadow-lg">
+                <NavSearchBox setSearchOpen={setSearchOpen} />
+              </div>
+            )}
+          </div>
 
           {/* Profile Icon */}
           <div className="relative" ref={profileMenuRef}>

@@ -44,7 +44,6 @@ const App = () => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
-      console.log('Stored user:', parsedUser);  // Log the user stored in localStorage
       if (!user) {
         loadUser(parsedUser);
         navigate('/');
@@ -52,14 +51,14 @@ const App = () => {
     }
   }, [user, dispatch, navigate]);
 
-  useEffect(() => {
-    // Check if user has an id after it's loaded from localStorage or set by context
-    if (user && user._id) {
-      console.log(`The logged-in user's ID is: ${user._id}`);
-    } else {
-      console.log('No user ID found');
-    }
-  }, [user]);
+  // useEffect(() => {//used for checking the api calls (not used anymore )
+  //   // Check if user has an id after it's loaded from localStorage or set by context
+  //   if (user && user._id) {
+  //     console.log(`The logged-in user's ID is: ${user._id}`);
+  //   } else {
+  //     console.log('No user ID found');
+  //   }
+  // }, [user]);
 
   return (
     <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'>

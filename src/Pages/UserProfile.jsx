@@ -3,11 +3,15 @@ import { Link } from 'react-router-dom'; // Assuming you're using React Router f
 import { useAuthContext } from '../Context/AuthContext';
 import defaultPhoto from '../assets/defaultPhoto.png'; 
 import RecipeElement from '../Components/RecipeElement';
+import NavBar from '../Components/NavBar';
+import { Menu, X } from "lucide-react"; // Icons for better UI
+
 
 const UserProfile = () => {
   const { user } = useAuthContext();
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isopen , setOpen] = useState(false);
 
   const {
     username,
@@ -51,11 +55,30 @@ const UserProfile = () => {
   }, [user]);
   
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!user?._id) return; // Ensure the user is logged in
+      try {
+        const res = await fetch(`http://localhost:3000/user/${user._id}`); // Adjust endpoint
+        if (!res.ok) throw new Error(`Error: ${res.statusText}`);
+  
+        const updatedUser = await res.json();
+        dispatch({ type: 'SET_USER', payload: updatedUser }); // Update context
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+  
+    fetchUserData(); // Call the function when the component mounts
+  }, []);
+
   if (loading) return <div>Loading...</div>;
   
-
+  console.log('the user is : ' , user)
   return (
+
     <div className='w-full mx-5 xl:mx-auto max-w-6xl p-6'>
+      <NavBar />
       <div className='bg-white rounded-xl shadow-lg p-8'>
         
 
@@ -80,11 +103,14 @@ const UserProfile = () => {
 
         {/* Social Stats */}
         <div className='grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 text-center'>
-            <div className='p-4 bg-gray-50 rounded-lg'>
+            {/* <div className='p-4 bg-gray-50 rounded-lg'>
                 <p className='text-xl font-bold text-gray-800'>{friends.length}</p>
                 <p className='text-gray-600'>Friends</p>
-            </div>
+            </div> */}
 
+
+
+{/* //in this section there is error wont display the right following or follower only when logged out then logged in  */}
             <div className='p-4 bg-gray-50 rounded-lg'>
                 <p className='text-xl font-bold text-gray-800'>{followers.length}</p>
                 <p className='text-gray-600'>Followers</p>
