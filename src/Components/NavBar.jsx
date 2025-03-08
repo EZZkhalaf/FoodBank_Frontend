@@ -37,7 +37,7 @@ const NavBar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
+  
   return (
     <nav className="fixed w-full top-0 z-50 bg-gray-900 text-white shadow-lg left-0 h-20 flex items-center">
       <div className="flex px-6 w-full justify-between items-center">
@@ -55,9 +55,7 @@ const NavBar = () => {
           <NavLink to="/findRecipes" className="hover:text-green-300 transition duration-300">
             Recipes
           </NavLink>
-          <NavLink to="/friends" className="hover:text-green-300 transition duration-300">
-            empty
-          </NavLink>
+          
         </div>
 
         {/* Icons (Search, Profile, Cart) */}

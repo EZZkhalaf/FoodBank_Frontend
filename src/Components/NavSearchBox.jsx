@@ -28,9 +28,11 @@ const NavSearchBox = ({ setSearchOpen }) => {
 
     try {
       const response = await fetch('http://localhost:3000/user/search', {
-        method: 'get',
+        method: 'post',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: searchedUser }),
+        body: JSON.stringify({ 
+          username: searchedUser
+        }),
       });
 
       const data = await response.json();
@@ -79,13 +81,13 @@ const NavSearchBox = ({ setSearchOpen }) => {
         </button>
       </div>
 
-      {/* Display error message */}
+      {/*  error  */}
       {error && <p className="text-red-500 text-center mt-3">{error}</p>}
 
-      {/* Display loading message */}
+      {/* loading message */}
       {loading && <p className="text-center mt-3">Loading...</p>}
 
-      {/* Scrollable results */}
+      {/*  results */}
       {users.length > 0 && (
         <ul className="w-full max-h-72 overflow-y-auto space-y-2 border border-gray-200 p-3 rounded-md bg-gray-50 mt-4">
           {users.map((user) => (

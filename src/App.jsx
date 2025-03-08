@@ -13,6 +13,7 @@ import Register from './Pages/Register';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from './Context/AuthContext';
 import SavedRecipes from './Pages/SavedRecipes';
+import FindRecipes from './Pages/FindRecipes';
 
 const App = () => {
   const navigate = useNavigate();
@@ -72,8 +73,9 @@ const App = () => {
         <Route path='/register' element={<Register loadUser={loadUser} />} />
         <Route path='/recipe/:RecipeId' element={<RecipeInfo />} />
         <Route path='/userprofile/:userId' element={<UserProfile />} />
-        <Route path='/ownRecipes' element={<UserRecipes />} />
-        <Route path='/savedRecipes' element={<SavedRecipes/>} />
+        {/* <Route path='/ownRecipes' element={<UserRecipes />} /> */}
+        <Route path='/savedRecipes' element={<SavedRecipes />} />
+        <Route path='/findRecipes' element={<FindRecipes  />}/>
       </Routes>
     </div>
   );
