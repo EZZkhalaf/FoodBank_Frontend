@@ -13,6 +13,7 @@ const Home = () => {
     if(!user){
       navigate('/login');
     }
+    // console.log(user)
   },[user,navigate])
  
   return (
@@ -26,7 +27,7 @@ const Home = () => {
       </div>
 
       {/* Main Content */}
-      <main className="flex flex-col items-center justify-center flex-grow px-6 sm:px-8 md:px-12 lg:px-16 mt-24">
+      <main className="flex flex-col items-center justify-center flex-grow px-6 sm:px-8 md:px-12 lg:px-16 mt-24 w-full ">
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-800 text-center mb-8">
           Here are some popular recipes: 🍽️
         </h1>

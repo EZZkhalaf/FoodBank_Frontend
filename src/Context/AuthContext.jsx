@@ -9,10 +9,13 @@ const initialState = {
 const authReducer = (state, action) => {
   switch (action.type) {
     case 'login':
+      localStorage.setItem('user' , JSON.stringify(action.payload));
       return { ...state, user: action.payload };
     case 'logout':
+      localStorage.removeItem('user');
       return { ...state, user: null };
     case 'SET_USER':
+      localStorage.setItem('user' , JSON.stringify(action.payload)); //update the info of the user without logging in again 
       return { ...state,  user: action.payload};
     default:
       return state;

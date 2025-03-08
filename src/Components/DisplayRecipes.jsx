@@ -19,9 +19,8 @@ const DisplayRecipes = () => {
   }, []);
 
 
-
   return (
-    <div className='grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-5'>
+    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 gap-y-5'>
       {recipes.map((recipe) => (
         <RecipeElement
           key={recipe._id} // Add a unique key
@@ -32,6 +31,6 @@ const DisplayRecipes = () => {
       ))}
     </div>
   );
-};
-
+}
+  
 export default DisplayRecipes;
