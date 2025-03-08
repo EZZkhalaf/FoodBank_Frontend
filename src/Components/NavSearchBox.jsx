@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from 'react';
 import { IoMdClose } from "react-icons/io";
 import { Search } from "lucide-react";
@@ -10,7 +12,7 @@ const NavSearchBox = ({ setSearchOpen }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const delay = setTimeout(() => handleSearch(query), 500); 
+    const delay = setTimeout(() => handleSearch(query), 500);
     return () => clearTimeout(delay);
   }, [query]);
 
@@ -26,7 +28,7 @@ const NavSearchBox = ({ setSearchOpen }) => {
 
     try {
       const response = await fetch('http://localhost:3000/user/search', {
-        method: 'post',
+        method: 'get',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: searchedUser }),
       });
@@ -54,38 +56,38 @@ const NavSearchBox = ({ setSearchOpen }) => {
   return (
     <form
       onSubmit={(e) => e.preventDefault()}
-      className="relative flex flex-col items-center bg-white border border-gray-300 rounded-lg shadow-md p-4 w-full max-w-2xl mt-8 sm:p-3"
+      className="relative flex flex-col items-center bg-white border border-gray-300 rounded-xl shadow-lg p-5 w-full max-w-3xl mt-10 sm:p-4"
     >
       {/* Search Bar */}
-      <div className="flex w-full items-center bg-white border-b border-gray-300 pb-2 mb-4">
+      <div className="flex w-full items-center bg-gray-100 border border-gray-300 rounded-full p-2 shadow-sm">
         <input
           type="text"
           placeholder="Search for Friends..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full p-3 outline-none bg-transparent text-gray-800 rounded-l-md"
+          className="w-full px-4 py-2 outline-none bg-transparent text-gray-800 text-lg rounded-full"
         />
-        <button type="submit" className="p-3 text-gray-600 hover:text-gray-900">
+        <button type="submit" className="p-2 text-gray-600 hover:text-gray-900">
           <Search size={24} />
         </button>
         <button 
           onClick={() => setSearchOpen(false)}
           type="button" 
-          className="p-3 text-gray-600 hover:text-gray-900"
+          className="p-2 text-gray-600 hover:text-gray-900"
         >
           <IoMdClose size={24} />
         </button>
       </div>
 
       {/* Display error message */}
-      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+      {error && <p className="text-red-500 text-center mt-3">{error}</p>}
 
       {/* Display loading message */}
-      {loading && <p className="text-center mb-4">Loading...</p>}
+      {loading && <p className="text-center mt-3">Loading...</p>}
 
       {/* Scrollable results */}
       {users.length > 0 && (
-        <ul className="w-full max-h-64 overflow-y-auto space-y-2 border border-gray-200 p-2 rounded-md">
+        <ul className="w-full max-h-72 overflow-y-auto space-y-2 border border-gray-200 p-3 rounded-md bg-gray-50 mt-4">
           {users.map((user) => (
             <UserElement key={user._id} user2={user} />
           ))}
@@ -94,7 +96,7 @@ const NavSearchBox = ({ setSearchOpen }) => {
 
       {/* No results message */}
       {users.length === 0 && !loading && !error && query.trim() && (
-        <p className="text-center text-gray-500">No users found</p>
+        <p className="text-center text-gray-500 mt-4">No users found</p>
       )}
     </form>
   );

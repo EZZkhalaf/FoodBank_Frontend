@@ -12,6 +12,7 @@ import { Component, useContext, useEffect, useState } from 'react';
 import Register from './Pages/Register';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from './Context/AuthContext';
+import SavedRecipes from './Pages/SavedRecipes';
 
 const App = () => {
   const navigate = useNavigate();
@@ -49,7 +50,10 @@ const App = () => {
         navigate('/');
       }
     }
+    
+    // console.log(user)
   }, [user, dispatch, navigate]);
+
 
   // useEffect(() => {//used for checking the api calls (not used anymore )
   //   // Check if user has an id after it's loaded from localStorage or set by context
@@ -66,12 +70,14 @@ const App = () => {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login loadUser={loadUser} />} />
         <Route path='/register' element={<Register loadUser={loadUser} />} />
-        <Route path='/recipe/:recipeId' element={<RecipeInfo />} />
+        <Route path='/recipe/:RecipeId' element={<RecipeInfo />} />
         <Route path='/userprofile/:userId' element={<UserProfile />} />
         <Route path='/ownRecipes' element={<UserRecipes />} />
+        <Route path='/savedRecipes' element={<SavedRecipes/>} />
       </Routes>
     </div>
   );
 }
 
 export default App;
+

@@ -7,6 +7,8 @@ import { IoMdMenu, IoMdClose } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import NavSearchBox from './NavSearchBox';
+import { FaBookBookmark } from "react-icons/fa6";
+
 
 const NavBar = () => {
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -72,7 +74,7 @@ const NavBar = () => {
             </button>
 
             {searchOpen && (
-              <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-[300px] bg-white p-3 rounded-md shadow-lg">
+              <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-[300px] bg-white p-3 rounded-md shadow-lg mt-0">
                 <NavSearchBox setSearchOpen={setSearchOpen} />
               </div>
             )}
@@ -118,13 +120,11 @@ const NavBar = () => {
 
           {/* Cart Icon */}
           <div className="relative flex">
-            <NavLink to="/cart" className="hover:text-green-300 transition duration-300">
+            <NavLink to="/savedRecipes" className="hover:text-green-300 transition duration-300">
               <button className="text-xl hover:bg-gray-700 transition duration-300 rounded-md p-2 focus:outline-none">
-                <CiShoppingCart />
+                <FaBookBookmark />
               </button>
-              <span className="absolute top-0 right-0 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center bg-red-500">
-                5
-              </span>
+              
             </NavLink>
           </div>
 
@@ -142,30 +142,45 @@ const NavBar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="absolute top-20 left-0 w-full bg-gray-900 z-50 h-screen md:hidden flex flex-col items-center mt-4 space-y-6">
-          <NavLink to="/" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-green-300 text-lg">
-            Home
-          </NavLink>
-          <NavLink to="/recipes" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-green-300 text-lg">
-            Recipes
-          </NavLink>
-          <NavLink to="/friends" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-green-300 text-lg">
-            Add Friends
-          </NavLink>
-          {user && (
-            <NavLink to={`/userprofile/${user._id}`} onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-green-300 text-lg">
-              My Profile
+
+        <div className="fixed top-20 left-0 w-full h-[calc(100vh-5rem)] bg-gray-900 z-50 md:hidden">
+          <div className="flex flex-col items-center py-8 space-y-6">
+            <NavLink
+              to="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-white hover:text-green-400 text-lg transition-colors duration-300"
+            >
+              Home
             </NavLink>
-          )}
-          <NavLink to="/cart" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-green-300 text-lg">
-            Cart
-          </NavLink>
-          <button 
-            onClick={handleLogout} 
-            className="text-red-400 hover:text-red-500 text-lg"
-          >
-            Logout
-          </button>
+
+
+            <NavLink
+              to="/findRecipes"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-white hover:text-green-400 text-lg transition-colors duration-300"
+            >
+              Recipes
+            </NavLink>
+            
+            {user && (
+              <NavLink
+                to={`/userprofile/${user._id}`}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-white hover:text-green-400 text-lg transition-colors duration-300"
+              >
+                My Profile
+              </NavLink>
+            )}
+            
+            {user && (
+              <button
+                onClick={handleLogout}
+                className="text-red-400 hover:text-red-500 text-lg transition-colors duration-300"
+              >
+                Logout
+              </button>
+            )}
+          </div>
         </div>
       )}
     </nav>

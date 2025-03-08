@@ -13,6 +13,7 @@ const Home = () => {
     if(!user){
       navigate('/login');
     }
+    // console.log(user)
   },[user,navigate])
  
   return (
