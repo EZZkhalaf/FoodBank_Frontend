@@ -17,7 +17,7 @@ const Home = () => {
   },[user,navigate])
  
   return (
-    <div className="home-page flex flex-col min-h-screen bg-gray-100">
+    <div className="home-page flex flex-col min-h-screen bg-gray-300 ">
       {/* Fixed Navbar */}
       <NavBar />
       

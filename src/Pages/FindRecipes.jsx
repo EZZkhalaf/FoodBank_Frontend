@@ -9,7 +9,7 @@ const FindRecipes = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
-
+  const [ingredientsOpen , setIngredientsOpen] = useState(false);
   // Fetch all recipes when component mounts
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -44,32 +44,47 @@ const FindRecipes = () => {
     <div className="bg-gray-50 min-h-screen">
       <NavBar />
 
-      <div className="container mx-auto px-4 max-w-7xl py-10 mt-15">
+      <div className="container mx-auto px-4 max-w-7xl py-10 mt-15 w-full">
         {/* Search Bar Section */}
         <div className="mb-10 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
             Find Recipes
           </h2>
-          <div className="max-w-lg mx-auto relative">
+
+          <div className="flex w-full max-w-lg mx-auto">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search recipes..."
-              className="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-md placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"
+              className="w-full px-5 py-3 border border-gray-300 rounded-l-lg shadow-md placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"
             />
+            {/* trigger the ingredients filtering  */}
+            <button 
+            onClick={() => setIngredientsOpen(!ingredientsOpen)}
+            className="px-4 py-3 bg-indigo-500 text-white rounded-r-lg shadow-md
+             hover:bg-indigo-600 transition">
+              filter with ingredients
+            </button>
           </div>
-        </div>
+        </div> {/* Fixed misplaced div closing tag here */}
+        {ingredientsOpen ? (
 
-        {/* Main Content - Grid Layout */}
+        <div className='w-full'>
+          <IngredientSelection />
+        </div>
+        ):(
+          <div></div>
+        )}
+
+        {/* page body */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Filter Sidebar */}
+          {/* Filtering */}
           <div className="md:col-span-1 bg-white rounded-xl shadow-lg p-6 space-y-6 h-fit">
-            <IngredientSelection />
             <RecipeType />
           </div>
 
-          {/* Recipes Grid */}
+          {/* Recipes elements */}
           <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredRecipes.map((recipe) => (
               <RecipeElement

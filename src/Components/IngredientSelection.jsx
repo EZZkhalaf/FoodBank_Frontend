@@ -1,50 +1,101 @@
-import React, { useState } from 'react';
-import IngredientElement from './ingredientElement';
+import React, { useEffect, useState } from 'react';
+import IngredientElement from './IngredientElement';
 
 const IngredientSelection = () => {
+  const [ingredientsBucket, setIngredientsBucket] = useState([]);
   const [showAll, setShowAll] = useState(false);
+  const [query, setQuery] = useState('');
+  const [searchedIngBucket, setSearchedIngBucket] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // Static list of ingredients
-  const ingredients = ["Chicken", "Beef", "Pork", "Fish", "Shrimp", "Mushroom", "Tofu", "Carrot", "Potato", "Onion"];
+  const selected = 'bg-gray-500'; // Darker gray for selected ingredients
+  const notSelected = 'bg-gray-200'; // Lighter gray for not selected (searched) ingredients
 
-  // Show only the first 6 ingredients unless "Show More" is clicked
-  const visibleIngredients = showAll ? ingredients : ingredients.slice(0, 6);
+  useEffect(() => {
+    const delay = setTimeout(() => handleIngredientSearch(query), 500);
+    return () => clearTimeout(delay);
+  }, [query]);
+
+  const handleIngredientSearch = async (searchedIng) => {
+    if (!searchedIng) {
+      setSearchedIngBucket([]);
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:3000/ingredients/searchIngredient', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ingredient_name: searchedIng,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data || 'error fetching the searchIngredients section');
+
+      setSearchedIngBucket(data);
+    } catch (error) {
+      console.log('error in fetching ingredients', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const getFirst30 = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/ingredients/getFirst20');
+        if (!response.ok) throw new Error('error in fetching the data and the network');
+
+        const data = await response.json();
+        setIngredientsBucket(data);
+      } catch (error) {
+        throw new Error(error);
+      }
+    };
+    getFirst30();
+  }, []);
+
+  // Show only the first 30 ingredients unless "Show All" is selected
+  const visibleIngredients = showAll ? ingredientsBucket : ingredientsBucket.slice(0, 30);
+  const visibleSearchedIngredients = searchedIngBucket.slice(0,30) 
 
   return (
-    <div className="space-y-6">
+    <div className="w-full h-1/2 min-h-[50vh] px-4 flex flex-col">
       {/* Ingredients Section */}
-      <div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">Filter by Ingredients</h3>
-        <div className="max-h-full overflow-y-auto rounded-lg border border-gray-200 p-3 w-full">
-          
-          {/* Search Input */}
-          <div className="relative max-w-lg mx-auto">
-            <input
-              type="text"
-              placeholder="Search ingredients..."
-              className="w-full px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300"
-            />
-          </div>
+      <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 h-full flex flex-col">
+        <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">Filter by Ingredients</h3>
 
-          {/* Display Ingredients */}
-          <div className="flex flex-col space-y-2 mt-5 mb-3">
-            {visibleIngredients.map((ingredient, index) => (
-              <IngredientElement key={index} ingredient={ingredient} />
-            ))}
-          </div>
+        {/* Search Input */}
+        <div className="relative w-full">
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            type="text"
+            placeholder="Search ingredients..."
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+          />
+        </div>
 
-          {/* Show More Button (Only if there are more than 6 ingredients) */}
-          {ingredients.length > 6 && (
-            <button
-              onClick={() => setShowAll(!showAll)}
-              className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-medium px-4 py-2 rounded-md shadow-sm transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-md active:scale-95"
-            >
-              <p className="text-xs uppercase tracking-wide">
-                {showAll ? "Show Less" : "More Ingredients"}
-              </p>
-            </button>
-          )}
+        {/* Searched Ingredients */}
+        {searchedIngBucket.length > 0 && (
+          <>
+            <div className="flex flex-wrap gap-4 p-4 min-w-[calc(40rem)] bg-gray-300 rounded-md shadow-md">
+              {visibleSearchedIngredients.map((ingredient, index) => (
+                <IngredientElement key={index} ingredient={ingredient.ingredient_name} bgColor={notSelected} />
+              ))}
+            </div>
 
+            {/* Divider Line */}
+            <hr className="border-t border-gray-400 my-4" />
+          </>
+        )}
+
+        {/* Ingredients List (Selected) */}
+        <div className="flex flex-wrap gap-4 p-4 min-w-[calc(40rem)] bg-gray-200 rounded-md shadow-md">
+          {visibleIngredients.map((ingredient, index) => (
+            <IngredientElement key={index} ingredient={ingredient.ingredient_name} bgColor={selected} />
+          ))}
         </div>
       </div>
     </div>
