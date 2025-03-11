@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import NavBar from "../Components/NavBar";
 
 const RecipeInfo = () => {
@@ -52,7 +52,6 @@ const RecipeInfo = () => {
   }
 
 
-
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 mt-13">
       
@@ -82,9 +81,13 @@ const RecipeInfo = () => {
   
         {/* Created By Section */}
         <div className="mt-6 text-center text-gray-600">
+        <Link 
+          to={`/userPage/${recipe.recipe_user}`}
+        >
           <p>
             Created By: <span className="font-semibold text-indigo-600">{recipeUser?.username || "Unknown User"}</span>
           </p>
+          </Link>
         </div>
   
         {/* Ingredients Section */}

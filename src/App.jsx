@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from './Context/AuthContext';
 import SavedRecipes from './Pages/SavedRecipes';
 import FindRecipes from './Pages/FindRecipes';
+import UserPage from './Pages/UserPage';
 
 const App = () => {
   const navigate = useNavigate();
@@ -75,7 +76,7 @@ const App = () => {
         <Route path='/userprofile/:userId' element={<UserProfile />} />
         {/* <Route path='/ownRecipes' element={<UserRecipes />} /> */}
         <Route path='/savedRecipes' element={<SavedRecipes />} />
-        <Route path='/findRecipes' element={<FindRecipes  />}/>
+        <Route path='/userPage/:user2_id' element={<UserPage  />}/>
       </Routes>
     </div>
   );

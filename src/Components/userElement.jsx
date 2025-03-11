@@ -4,6 +4,7 @@ import { IoPersonAdd } from "react-icons/io5";
 import { useAuthContext } from "../Context/AuthContext";
 import { IoMdDoneAll } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const UserElement = ({ user2 }) => {
   const [loading, setLoading] = useState(false);
@@ -35,6 +36,9 @@ const UserElement = ({ user2 }) => {
   };
 
   return (
+    <Link 
+      to={`/userPage/${user2._id}`}
+    >
     <div 
       // onClick={}
       className="flex items-center justify-between p-3 border-b border-gray-200 w-full bg-gray-100 rounded-md shadow-md">
@@ -59,6 +63,7 @@ const UserElement = ({ user2 }) => {
           />
         )}
     </div>
+        </Link>
   );
 };
 
