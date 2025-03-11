@@ -3,21 +3,23 @@ import React, { useState } from 'react';
 const RecipeType = ({ selectedRecipeType, setSelectedRecipeType }) => {
   // Static list of recipe types
   const recipeTypes = [
-    'Appetizers',
-    'Main Courses',
-    'Desserts',
-    'Soups',
-    'Salads',
-    'Beverages',
-    'Side Dishes',
-    'Snacks',
+    'Appetizer',
+    'Main Course',
+    'Dessert',
+    'Soup',
+    'Salad',
+    'Beverage',
+    'Side Dish',
+    'Snack',
     'Drinks',
     'Vegan'
   ];
 
   // Handle the change in recipe type
   const handleChange = (type) => {
-    setSelectedRecipeType(type);
+    // setSelectedRecipeType(type);
+    if(selectedRecipeType === type) setSelectedRecipeType(null);
+    else setSelectedRecipeType(type)
   };
 
   return (
@@ -31,7 +33,8 @@ const RecipeType = ({ selectedRecipeType, setSelectedRecipeType }) => {
               type="radio"
               name="recipeType"
               value={type}
-              
+              checked={selectedRecipeType === type}
+              onClick={() => handleChange(type)}
               className="h-4 w-4 text-indigo-600 focus:ring-indigo-500"
             />
             <label className="ml-2 text-sm text-gray-600">{type}</label>
