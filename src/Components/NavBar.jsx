@@ -1,198 +1,9 @@
-// import React, { useState, useEffect, useRef } from 'react';
-// import { Link, NavLink } from 'react-router-dom';
-// import logo from '../assets/logo.png';
-// import { CiSearch, CiShoppingCart } from 'react-icons/ci';
-// import { CgProfile } from 'react-icons/cg';
-// import { IoMdMenu, IoMdClose } from "react-icons/io";
-// import { useNavigate } from 'react-router-dom';
-// import { useAuthContext } from '../hooks/useAuthContext';
-// import NavSearchBox from './NavSearchBox';
-// import { FaBookBookmark } from "react-icons/fa6";
-
-
-// const NavBar = () => {
-//   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
-//   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-//   const [searchOpen , setSearchOpen] = useState(false);
-//   const profileMenuRef = useRef(null);
-//   const navigate = useNavigate();
-//   const {user , dispatch} = useAuthContext();
-
-//   const handleLogout = () => {
-//     localStorage.removeItem('token');
-//     localStorage.removeItem('user');
-//     dispatch({type:'logout'});
-//     navigate('/login');
-//   };
-
- 
-
-//   // Close Profile Menu when clicking outside
-//   useEffect(() => {
-//     const handleClickOutside = (event) => {
-//       if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
-//         setProfileMenuOpen(false);
-//       }
-//     };
-//     document.addEventListener("mousedown", handleClickOutside);
-//     return () => document.removeEventListener("mousedown", handleClickOutside);
-//   }, []);
-  
-//   return (
-//     <nav className="fixed w-full top-0 z-50 bg-gray-900 text-white shadow-lg left-0 h-20 flex items-center">
-//       <div className="flex px-6 w-full justify-between items-center">
-        
-//         {/* Logo */}
-//         <Link to="/" className="text-green-500 hover:text-green-300 transition duration-300">
-//           <img src={logo} alt="Logo" className="h-16" />
-//         </Link>
-
-//         {/* Desktop Menu */}
-//         <div className="hidden md:flex space-x-8">
-//           <NavLink to="/" className="hover:text-green-300 transition duration-300">
-//             Home
-//           </NavLink>
-//           <NavLink to="/findRecipes" className="hover:text-green-300 transition duration-300">
-//             Recipes
-//           </NavLink>
-          
-//         </div>
-
-//         {/* Icons (Search, Profile, Cart) */}
-//         <div className="flex items-center space-x-6">
-
-
-         
-//           <div className="relative">
-//             <button 
-//               onClick={() => setSearchOpen(true)}
-//               className="text-xl bg-gray-800 hover:bg-gray-700 transition-all duration-300 rounded-full p-3 shadow-md border border-gray-600 focus:ring-2 focus:ring-green-400 focus:outline-none"
-//             >
-//               <CiSearch className="text-white" />
-//             </button>
-
-//             {searchOpen && (
-//               <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-[300px] bg-white p-3 rounded-md shadow-lg mt-0">
-//                 <NavSearchBox setSearchOpen={setSearchOpen} />
-//               </div>
-//             )}
-//           </div>
-
-//           {/* Profile Icon */}
-//           <div className="relative" ref={profileMenuRef}>
-//             <button
-//               onClick={() => setProfileMenuOpen(!isProfileMenuOpen)}
-//               className="text-xl hover:bg-gray-700 transition duration-300 rounded-md p-2 focus:outline-none"
-//             >
-//               <CgProfile />
-//             </button>
-
-//             {isProfileMenuOpen && user && (
-//               <div className="absolute right-0 mt-2 w-48 bg-white text-black shadow-lg rounded-lg py-2">
-//                 <Link to={`/userprofile/:${user._id}`} className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
-//                   My Profile
-//                 </Link>
-//                 <Link to="/my-recipes" className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
-//                   My Recipes
-//                 </Link>
-//                 <button 
-//                   onClick={handleLogout}
-//                   className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
-//                 >
-//                   Logout
-//                 </button>
-//               </div>
-//             )}
-//             {isProfileMenuOpen && !user &&(
-//               <div className="absolute right-0 mt-2 w-48 bg-white text-black shadow-lg rounded-lg py-2">
-//                 <Link to={`/login`} className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
-//                   login
-//                 </Link>
-//                 <Link to="/register" className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
-//                   create a new account
-//                 </Link>
-                
-//               </div>
-//             )}
-//           </div>
-
-//           {/* Cart Icon */}
-//           <div className="relative flex">
-//             <NavLink to="/savedRecipes" className="hover:text-green-300 transition duration-300">
-//               <button className="text-xl hover:bg-gray-700 transition duration-300 rounded-md p-2 focus:outline-none">
-//                 <FaBookBookmark />
-//               </button>
-              
-//             </NavLink>
-//           </div>
-
-//           {/* Mobile Menu Toggle */}
-//           <div className="md:hidden">
-//             <button 
-//               onClick={() => setMobileMenuOpen(!isMobileMenuOpen)} 
-//               className="text-2xl focus:outline-none"
-//             >
-//               {isMobileMenuOpen ? <IoMdClose /> : <IoMdMenu />}
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Mobile Menu */}
-//       {isMobileMenuOpen && (
-
-//         <div className="fixed top-20 left-0 w-full h-[calc(100vh-5rem)] bg-gray-900 z-50 md:hidden">
-//           <div className="flex flex-col items-center py-8 space-y-6">
-//             <NavLink
-//               to="/"
-//               onClick={() => setMobileMenuOpen(false)}
-//               className="text-white hover:text-green-400 text-lg transition-colors duration-300"
-//             >
-//               Home
-//             </NavLink>
-
-
-//             <NavLink
-//               to="/findRecipes"
-//               onClick={() => setMobileMenuOpen(false)}
-//               className="text-white hover:text-green-400 text-lg transition-colors duration-300"
-//             >
-//               Recipes
-//             </NavLink>
-            
-//             {user && (
-//               <NavLink
-//                 to={`/userprofile/${user._id}`}
-//                 onClick={() => setMobileMenuOpen(false)}
-//                 className="text-white hover:text-green-400 text-lg transition-colors duration-300"
-//               >
-//                 My Profile
-//               </NavLink>
-//             )}
-            
-//             {user && (
-//               <button
-//                 onClick={handleLogout}
-//                 className="text-red-400 hover:text-red-500 text-lg transition-colors duration-300"
-//               >
-//                 Logout
-//               </button>
-//             )}
-//           </div>
-//         </div>
-//       )}
-//     </nav>
-//   );
-// };
-
-// export default NavBar;
-
 
 
 import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { CiSearch, CiShoppingCart } from "react-icons/ci";
+import { CiSearch } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
@@ -204,9 +15,22 @@ const NavBar = () => {
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const profileMenuRef = useRef(null);
   const navigate = useNavigate();
   const { user, dispatch } = useAuthContext();
+
+
+  const toggleSearch = () => {
+    setSearchOpen(!searchOpen);
+  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -215,7 +39,6 @@ const NavBar = () => {
     navigate("/login");
   };
 
-  // Close Profile Menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
@@ -226,142 +49,327 @@ const NavBar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // return (
+  //   <header 
+  //     className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+  //       isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : 'bg-transparent'
+  //     }`}
+  //   >
+  //     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  //       <div className="flex items-center justify-between h-16">
+  //         {/* Logo */}
+  //         <div className="flex-shrink-0">
+  //           <Link to="/" className="font-serif text-2xl font-semibold tracking-tight text-foreground">
+  //             <img src={logo} alt="Logo" className="h-12" />
+  //           </Link>
+  //         </div>
+
+  //         {/* Desktop Menu */}
+  //         <nav className="hidden md:flex space-x-8">
+  //           <NavLink
+  //             to="/"
+  //             className={({ isActive }) => `transition-colors duration-200 font-medium ${
+  //               isActive ? 'text-spice-500' : 'text-foreground/80 hover:text-foreground'
+  //             }`}
+  //           >
+  //             Home
+  //           </NavLink>
+  //           <NavLink
+  //             to="/findRecipes"
+  //             className={({ isActive }) => `transition-colors duration-200 font-medium ${
+  //               isActive ? 'text-spice-500' : 'text-foreground/80 hover:text-foreground'
+  //             }`}
+  //           >
+  //             Recipes
+  //           </NavLink>
+  //         </nav>
+
+  //         {/* Icons Section */}
+  //         <div className="flex items-center space-x-4">
+  //           {/* Search */}
+  //             <div className="relative">
+  //               <button
+  //                   onClick={toggleSearch}
+  //                   className={`p-2 rounded-full transition-colors ${
+  //                     searchOpen ? "bg-gray-200" : "hover:bg-gray-100"
+  //                   }`}
+  //                   aria-label="Search"
+  //                 >
+  //                   <CiSearch className="h-5 w-5" />
+  //                 </button>
+
+  //                 {searchOpen && (
+  //                   <div className="absolute top-12 right-0 w-72 bg-white p-4 rounded-lg shadow-xl">
+  //                     <NavSearchBox setSearchOpen={setSearchOpen} />
+  //                   </div>
+  //                 )}
+  //               </div>
+
+
+
+
+  //           {/* Profile */}
+  //           <div className="relative" ref={profileMenuRef}>
+  //             <button
+  //               onClick={() => setProfileMenuOpen(!isProfileMenuOpen)}
+  //               className="btn btn-ghost btn-icon"
+  //               aria-label="Profile"
+  //             >
+  //               <CgProfile className="w-5 h-5" />
+  //             </button>
+              
+  //             {isProfileMenuOpen && (
+  //               <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2 animate-fade-in">
+  //                 {user ? (
+  //                   <>
+  //                     <Link to={`/userprofile/${user._id}`} className="block px-4 py-2 hover:bg-sand-100 transition-colors">
+  //                       My Profile
+  //                     </Link>
+  //                     <Link to="/my-recipes" className="block px-4 py-2 hover:bg-sand-100 transition-colors">
+  //                       My Recipes
+  //                     </Link>
+  //                     <button 
+  //                       onClick={handleLogout}
+  //                       className="w-full text-left px-4 py-2 hover:bg-sand-100 transition-colors"
+  //                     >
+  //                       Logout
+  //                     </button>
+  //                   </>
+  //                 ) : (
+  //                   <>
+  //                     <Link to="/login" className="block px-4 py-2 hover:bg-sand-100 transition-colors">
+  //                       Login
+  //                     </Link>
+  //                     <Link to="/register" className="block px-4 py-2 hover:bg-sand-100 transition-colors">
+  //                       Register
+  //                     </Link>
+  //                   </>
+  //                 )}
+  //               </div>
+  //             )}
+  //           </div>
+
+  //           {/* Saved Recipes */}
+  //           <NavLink 
+  //             to="/savedRecipes" 
+  //             className={({ isActive }) => `btn btn-ghost btn-icon ${isActive ? 'text-spice-500' : ''}`}
+  //           >
+  //             <FaBookBookmark className="w-5 h-5" />
+  //           </NavLink>
+
+  //           {/* Mobile Menu Toggle */}
+  //           <button
+  //             onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
+  //             className="btn btn-ghost btn-icon md:hidden"
+  //             aria-label="Menu"
+  //           >
+  //             {isMobileMenuOpen ? <IoMdClose className="w-5 h-5" /> : <IoMdMenu className="w-5 h-5" />}
+  //           </button>
+  //         </div>
+  //       </div>
+  //     </div>
+
+  //     {/* Mobile Menu */}
+  //     {isMobileMenuOpen && (
+  //       <div className="md:hidden bg-white/95 backdrop-blur-md animate-fade-in">
+  //         <div className="px-2 pt-2 pb-4 space-y-1 sm:px-3">
+  //           <NavLink
+  //             to="/"
+  //             onClick={() => setMobileMenuOpen(false)}
+  //             className="block px-3 py-4 text-base font-medium border-b border-sand-100"
+  //           >
+  //             Home
+  //           </NavLink>
+  //           <NavLink
+  //             to="/findRecipes"
+  //             onClick={() => setMobileMenuOpen(false)}
+  //             className="block px-3 py-4 text-base font-medium border-b border-sand-100"
+  //           >
+  //             Recipes
+  //           </NavLink>
+  //           {user && (
+  //             <>
+  //               <NavLink
+  //                 to={`/userprofile/${user._id}`}
+  //                 onClick={() => setMobileMenuOpen(false)}
+  //                 className="block px-3 py-4 text-base font-medium border-b border-sand-100"
+  //               >
+  //                 My Profile
+  //               </NavLink>
+  //               <button
+  //                 onClick={handleLogout}
+  //                 className="block w-full text-left px-3 py-4 text-base font-medium border-b border-sand-100 text-red-500"
+  //               >
+  //                 Logout
+  //               </button>
+  //             </>
+  //           )}
+  //         </div>
+  //       </div>
+  //     )}
+  //   </header>
+  // );
+
   return (
-    <nav className="fixed w-full top-0 z-50 bg-gray-900 text-white shadow-lg left-0 h-20 flex items-center">
-      <div className="flex px-6 w-full justify-between items-center">
-        {/* Logo */}
-        <Link to="/" className="text-green-500 hover:text-green-300 transition duration-300">
-          <img src={logo} alt="Logo" className="h-16" />
-        </Link>
-
-        {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-8">
-          <NavLink to="/" className="hover:text-green-300 transition duration-300">
-            Home
-          </NavLink>
-          <NavLink to="/findRecipes" className="hover:text-green-300 transition duration-300">
-            Recipes
-          </NavLink>
-        </div>
-
-        {/* Icons (Search, Profile, Cart) */}
-        <div className="flex items-center space-x-6">
-          {/* Search Icon */}
-          <div className="relative">
-            <button
-              onClick={() => setSearchOpen(!searchOpen)}
-              className="text-xl bg-gray-800 hover:bg-gray-700 transition-all duration-300 rounded-full p-3 shadow-md border border-gray-600 focus:ring-2 focus:ring-green-400 focus:outline-none"
-            >
-              <CiSearch className="text-white" />
-            </button>
-
-            {/* Search Box */}
-            {searchOpen && (
-              <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-[300px] bg-white p-3 rounded-md shadow-lg mt-0">
-                <NavSearchBox setSearchOpen={setSearchOpen} />
-              </div>
-            )}
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : 'bg-transparent'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <Link to="/" className="font-serif text-2xl font-semibold tracking-tight text-foreground">
+              <img src={logo} alt="Logo" className="h-12" />
+            </Link>
           </div>
-
-          {/* Profile Icon */}
-          <div className="relative" ref={profileMenuRef}>
-            <button
-              onClick={() => setProfileMenuOpen(!isProfileMenuOpen)}
-              className="text-xl hover:bg-gray-700 transition duration-300 rounded-md p-2 focus:outline-none"
+  
+          {/* Desktop Menu */}
+          <nav className="hidden md:flex space-x-8">
+            <NavLink
+              to="/"
+              className={({ isActive }) => `transition-colors duration-200 font-medium ${
+                isActive ? 'text-spice-500' : 'text-foreground/80 hover:text-foreground'
+              }`}
             >
-              <CgProfile />
-            </button>
-
-            {/* Profile Dropdown */}
-            {isProfileMenuOpen && user && (
-              <div className="absolute right-0 mt-2 w-48 bg-white text-black shadow-lg rounded-lg py-2">
-                <Link to={`/userprofile/:${user._id}`} className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
-                  My Profile
-                </Link>
-                <Link to="/my-recipes" className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
-                  My Recipes
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-            {isProfileMenuOpen && !user && (
-              <div className="absolute right-0 mt-2 w-48 bg-white text-black shadow-lg rounded-lg py-2">
-                <Link to={`/login`} className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
-                  Login
-                </Link>
-                <Link to="/register" className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">
-                  Create a New Account
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Cart Icon */}
-          <div className="relative flex">
-            <NavLink to="/savedRecipes" className="hover:text-green-300 transition duration-300">
-              <button className="text-xl hover:bg-gray-700 transition duration-300 rounded-md p-2 focus:outline-none">
-                <FaBookBookmark />
-              </button>
+              Home
             </NavLink>
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <div className="md:hidden">
+            <NavLink
+              to="/findRecipes"
+              className={({ isActive }) => `transition-colors duration-200 font-medium ${
+                isActive ? 'text-spice-500' : 'text-foreground/80 hover:text-foreground'
+              }`}
+            >
+              Recipes
+            </NavLink>
+          </nav>
+  
+          {/* Icons Section */}
+          <div className="flex items-center space-x-6">
+            {/* Search */}
+            <div className="relative">
+              <button
+                onClick={toggleSearch}
+                className={`p-2 rounded-full transition-colors ${
+                  searchOpen ? 'bg-gray-200' : 'hover:bg-gray-100'
+                }`}
+                aria-label="Search"
+              >
+                <CiSearch className="h-5 w-5" />
+              </button>
+              {searchOpen && (
+                <div className="absolute top-12 right-0 w-72 bg-white p-4 rounded-lg shadow-xl">
+                  <NavSearchBox setSearchOpen={setSearchOpen} />
+                </div>
+              )}
+            </div>
+  
+            {/* Profile */}
+            <div className="relative" ref={profileMenuRef}>
+              <button
+                onClick={() => setProfileMenuOpen(!isProfileMenuOpen)}
+                className="btn btn-ghost btn-icon"
+                aria-label="Profile"
+              >
+                <CgProfile className="w-5 h-5" />
+              </button>
+  
+              {isProfileMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2 animate-fade-in">
+                  {user ? (
+                    <>
+                      <Link to={`/userprofile/${user._id}`} className="block px-4 py-2 hover:bg-sand-100 transition-colors">
+                        My Profile
+                      </Link>
+                      <Link to="/my-recipes" className="block px-4 py-2 hover:bg-sand-100 transition-colors">
+                        My Recipes
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left px-4 py-2 hover:bg-sand-100 transition-colors"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/login" className="block px-4 py-2 hover:bg-sand-100 transition-colors">
+                        Login
+                      </Link>
+                      <Link to="/register" className="block px-4 py-2 hover:bg-sand-100 transition-colors">
+                        Register
+                      </Link>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+  
+            {/* Saved Recipes */}
+            <NavLink
+              to="/savedRecipes"
+              className={({ isActive }) => `btn btn-ghost btn-icon ${isActive ? 'text-spice-500' : ''}`}
+            >
+              <FaBookBookmark className="w-5 h-5" />
+            </NavLink>
+  
+            {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-2xl focus:outline-none"
+              className="btn btn-ghost btn-icon md:hidden"
+              aria-label="Menu"
             >
-              {isMobileMenuOpen ? <IoMdClose /> : <IoMdMenu />}
+              {isMobileMenuOpen ? <IoMdClose className="w-5 h-5" /> : <IoMdMenu className="w-5 h-5" />}
             </button>
           </div>
         </div>
       </div>
-
+  
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="fixed top-20 left-0 w-full h-[calc(100vh-5rem)] bg-gray-900 z-50 md:hidden">
-          <div className="flex flex-col items-center py-8 space-y-6">
+        <div className="md:hidden bg-white/95 backdrop-blur-md animate-fade-in">
+          <div className="px-2 pt-2 pb-4 space-y-1 sm:px-3">
             <NavLink
               to="/"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-white hover:text-green-400 text-lg transition-colors duration-300"
+              className="block px-3 py-4 text-base font-medium border-b border-sand-100"
             >
               Home
             </NavLink>
             <NavLink
               to="/findRecipes"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-white hover:text-green-400 text-lg transition-colors duration-300"
+              className="block px-3 py-4 text-base font-medium border-b border-sand-100"
             >
               Recipes
             </NavLink>
             {user && (
-              <NavLink
-                to={`/userprofile/${user._id}`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-white hover:text-green-400 text-lg transition-colors duration-300"
-              >
-                My Profile
-              </NavLink>
-            )}
-            {user && (
-              <button
-                onClick={handleLogout}
-                className="text-red-400 hover:text-red-500 text-lg transition-colors duration-300"
-              >
-                Logout
-              </button>
+              <>
+                <NavLink
+                  to={`/userprofile/${user._id}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3 py-4 text-base font-medium border-b border-sand-100"
+                >
+                  My Profile
+                </NavLink>
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-3 py-4 text-base font-medium border-b border-sand-100 text-red-500"
+                >
+                  Logout
+                </button>
+              </>
             )}
           </div>
         </div>
       )}
-    </nav>
+    </header>
   );
+  
 };
 
 export default NavBar;
+
+
+

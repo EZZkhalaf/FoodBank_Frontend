@@ -12,8 +12,27 @@ const SavedRecipes = () => {
   useEffect(() => {
     const getSavedRecipes = async () => {
       try {
-        const SavedRecipes = user.savedRecipes;
-        setRecipes(SavedRecipes); 
+        // const SavedRecipes = user.savedRecipes;
+        // setRecipes(SavedRecipes); 
+        const response = await fetch(`http://localhost:3000/user/savedRecipes/${userid}`);
+        const data = await response.json();
+        if(data.length === 0){
+          setRecipes([]);
+          return 
+        }
+        console.log(data)
+
+
+
+        const response2 = await fetch('http://localhost:3000/recipe/getMultipleRecipesData' , {
+          method : 'POST' ,
+          headers: {"Content-Type" : 'application/json'},
+          body : JSON.stringify({
+            recipeIds : data
+          })
+        }) 
+        const data2= await response2.json();
+        setRecipes(data2)
       } catch (error) {
         console.log(error); // Handle error
       }

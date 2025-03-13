@@ -67,7 +67,7 @@ const App = () => {
   // }, [user]);
 
   return (
-    <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] '>
+    <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] w-full'>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login loadUser={loadUser} />} />
@@ -76,6 +76,7 @@ const App = () => {
         <Route path='/userprofile/:userId' element={<UserProfile />} />
         {/* <Route path='/ownRecipes' element={<UserRecipes />} /> */}
         <Route path='/savedRecipes' element={<SavedRecipes />} />
+        <Route path='/findRecipes' element={<FindRecipes />} />
         <Route path='/userPage/:user2_id' element={<UserPage  />}/>
       </Routes>
     </div>

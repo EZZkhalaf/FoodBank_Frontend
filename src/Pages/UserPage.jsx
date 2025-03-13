@@ -1,3 +1,6 @@
+
+
+
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import defaultPhoto from "../assets/defaultPhoto.png";
@@ -41,10 +44,29 @@ const UserPage = () => {
       }
     };
 
+
     fetchUserData();
-    const interval = setInterval(fetchUserData, 10000);
+    const interval = setInterval(fetchUserData, 100000);
     return () => clearInterval(interval);
   }, [user2_id]);
+
+  const  handleToggleFollowButton = async() =>{
+    try {
+      const response = await fetch('http://localhost:3000/user/toggleFollow' ,{
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          currentuserid: user._id,
+          followinguserid : user2_id
+         })
+      })
+      const data = await response.json();
+
+      console.log(data)
+    } catch (error) {
+      console.log('error in adding the user' , error)
+    }
+  }
 
   // Fetch user recipes
   useEffect(() => {
@@ -59,7 +81,7 @@ const UserPage = () => {
         if (!res.ok) throw new Error(`Error: ${res.statusText}`);
 
         const data = await res.json();
-        console.log("User recipes:", data);
+        // console.log("User recipes:", data);
         setRecipes(data);
       } catch (error) {
         console.error("Error fetching recipes:", error);
@@ -84,14 +106,26 @@ const UserPage = () => {
             alt={`${userPageOwner.username}'s profile`}
             className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
           />
-          <div className="text-center md:text-left">
+          <div className="flex items-center justify-between w-full text-center md:text-lef">
+            <div>
             <h1 className="text-3xl font-bold text-gray-800">
               {userPageOwner.username || "Guest"}
             </h1>
             <p className="text-gray-600 mt-2">
               {userPageOwner.bio || "No bio available"}
             </p>
-          </div>
+              </div>
+            
+              <button
+                onClick={handleToggleFollowButton}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white font-semibold 
+                rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2
+                focus:ring-blue-400 focus:ring-opacity-75"
+                >
+                {/* {follower ? "Unfollow" : "Follow"} */}
+                add
+              </button>
+              </div>
         </div>
 
         {/* Stats Section */}
@@ -143,3 +177,5 @@ const UserPage = () => {
 };
 
 export default UserPage;
+
+
