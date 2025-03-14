@@ -5,6 +5,9 @@ import NavBar from '../Components/NavBar';
 import RecipeElement from '../Components/RecipeElement';
 import { ServerOff } from 'lucide-react';
 import { debounce } from 'lodash';
+import {useSearchParams} from 'react-router-dom';
+
+
 
 const API_ENDPOINTS = {
   RECIPES: 'http://localhost:3000/recipe',
@@ -21,6 +24,13 @@ const FindRecipes = () => {
   const [selectedRecipeType, setSelectedRecipeType] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchParams] = useSearchParams();
+
+  useEffect(()=>{
+    const initialCategory = searchParams.get('category');
+    if(initialCategory) setSelectedRecipeType(decodeURIComponent(initialCategory));
+    
+  },[searchParams])
 
   const fetchRecipes = useCallback(async () => {
     setLoading(true);
@@ -130,12 +140,16 @@ const FindRecipes = () => {
 
   const renderRecipes = (recipes) => (
     recipes.map((recipe) => (
-      <RecipeElement
-        key={recipe._id}
-        RecipeId={recipe._id}
-        recipe_image={recipe.recipe_image}
-        recipe_name={recipe.recipe_title}
-      />
+      <RecipeElement 
+      key={recipe._id}
+      RecipeId={recipe._id}
+      recipe_image={recipe.recipe_image}
+      recipe_name={recipe.recipe_title}
+      recipe_description={recipe.recipe_description}
+      recipeType={recipe.type} 
+      cookingTime ={recipe.cookingTime}
+      difficulty = {recipe.difficullty}
+    />
     ))
   );
 

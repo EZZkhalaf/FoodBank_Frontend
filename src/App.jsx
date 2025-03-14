@@ -67,7 +67,7 @@ const App = () => {
   // }, [user]);
 
   return (
-    <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] w-full'>
+    <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] w-full '>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login loadUser={loadUser} />} />

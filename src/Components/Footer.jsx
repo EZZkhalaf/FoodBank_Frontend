@@ -25,7 +25,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/recipes" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/findRecipes" className="text-muted-foreground hover:text-foreground transition-colors">
                   All Recipes
                 </Link>
               </li>
@@ -36,7 +36,7 @@ const Footer = () => {
             <h3 className="font-medium text-lg mb-4">Categories</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/recipes?category=breakfast" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/findRecipes?category=breakfast" className="text-muted-foreground hover:text-foreground transition-colors">
                   Breakfast
                 </Link>
               </li>

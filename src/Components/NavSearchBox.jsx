@@ -1,69 +1,44 @@
-
-import React, { useEffect, useState } from "react";
-import { IoMdClose } from "react-icons/io";
+import React, { useEffect, useState, useCallback } from "react";
 import { Search } from "lucide-react";
 import UserElement from "./userElement";
 
-const NavSearchBox = ({ setSearchOpen }) => {
+const NavSearchBox = () => {
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const delay = setTimeout(() => handleSearch(query), 500);
-    return () => clearTimeout(delay);
-  }, [query]);
-
-  const handleSearch = async (searchedUser) => {
-    if (!searchedUser.trim()) {
-      setUsers([]);
-      setError(null);
-      return;
-    }
+  const handleSearch = useCallback(async (searchedUser) => {
+    if (!searchedUser.trim()) return setUsers([]);
 
     setLoading(true);
     setError(null);
 
     try {
       const response = await fetch("http://localhost:3000/user/search", {
-        method: "post",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: searchedUser,
-        }),
+        body: JSON.stringify({ username: searchedUser }),
       });
 
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Error fetching users");
-      }
-
-      if (data === "no users found") {
-        setUsers([]);
-        setError("No users found");
-      } else {
-        setUsers(data);
-      }
-    } catch (err) {
-      console.error("Error fetching users:", err);
-      setError("Error fetching users");
+      setUsers(data === "no users found" ? [] : data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      setError("Failed to fetch users. Please try again.");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-
+  useEffect(() => {
+    const delay = setTimeout(() => handleSearch(query), 500);
+    return () => clearTimeout(delay);
+  }, [query, handleSearch]);
 
   return (
-    <div className="fixed inset-0 flex items-start justify-center p-6 bg-black bg-opacity-50 z-50">
-      <div
-        className={(
-          "bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 ease-in-out origin-top",
-          "w-full max-w-md transform"
-        )}
-      >
+    <div className="fixed inset-0 flex  justify-center p-6   z-50">
+      <div className=" rounded-lg shadow-lg overflow-hidden transition-all duration-300 ease-in-out origin-top w-full max-w-md transform">
         <form
           onSubmit={(e) => e.preventDefault()}
           className="flex flex-col items-center p-4"
@@ -83,13 +58,6 @@ const NavSearchBox = ({ setSearchOpen }) => {
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors"
               >
                 <Search className="h-4 w-4 text-gray-600" />
-              </button>
-              <button
-                onClick={() => setSearchOpen(false)}
-                type="button"
-                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              >
-                <IoMdClose className="h-4 w-4 text-gray-600" />
               </button>
             </div>
           </div>
@@ -129,4 +97,3 @@ const NavSearchBox = ({ setSearchOpen }) => {
 };
 
 export default NavSearchBox;
-

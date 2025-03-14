@@ -5,6 +5,8 @@ import { useAuthContext } from "../Context/AuthContext";
 import { IoMdDoneAll } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import defaultPhoto from '../assets/defaultPhoto.png'; 
+
 
 const UserElement = ({ user2 }) => {
   const [loading, setLoading] = useState(false);
@@ -44,7 +46,7 @@ const UserElement = ({ user2 }) => {
       className="flex items-center justify-between p-3 border-b border-gray-200 w-full bg-gray-100 rounded-md shadow-md">
         <div className="flex items-center">
           <img
-            src={user2.profilePicture || "default-profile.jpg"}
+            src={user2.profilePicture || defaultPhoto}
             alt={`${user2.username}'s profile`}
             className="w-10 h-10 rounded-full object-cover mr-3"
           />
@@ -54,13 +56,14 @@ const UserElement = ({ user2 }) => {
         {successfullyAdded ? (
           <></>
         ) : (
-          <IoPersonAdd
-            onClick={followUser}
-            className={`text-2xl cursor-pointer ${
-              loading ? "text-gray-400 cursor-not-allowed" : "text-blue-500 hover:text-blue-700"
-            }`}
-            disabled={loading}
-          />
+          // <IoPersonAdd
+          //   onClick={followUser}
+          //   className={`text-2xl cursor-pointer ${
+          //     loading ? "text-gray-400 cursor-not-allowed" : "text-blue-500 hover:text-blue-700"
+          //   }`}
+          //   disabled={loading}
+          // />
+          <div></div>
         )}
     </div>
         </Link>
