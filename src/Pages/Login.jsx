@@ -48,7 +48,7 @@ const Login = () => {
       if (response.ok) {
         toast.success('Login successful!', { autoClose: 1500 });
         
-        console.log(data.user._id)
+       
 
         // Save token and user to localStorage
         localStorage.setItem('token', data.token);
