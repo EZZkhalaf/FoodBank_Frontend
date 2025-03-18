@@ -1,8 +1,6 @@
 
-
-
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import defaultPhoto from "../assets/defaultPhoto.png";
 import ProfileRecipeElement from "../Components/profileRecipeElement";
 import { useAuthContext } from "../Context/AuthContext";
@@ -14,16 +12,38 @@ const UserPage = () => {
   const [userPageOwner, setUserPageOwner] = useState(null);
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [follower , setFollower] = useState(false);
   const userProfilePic =
     userPageOwner?.profilePic && userPageOwner.profilePic !== "/assets/defaultPhoto.png"
       ? userPageOwner.profilePic
       : defaultPhoto;
 
+    const navigate = useNavigate();
+
+  //checking for the follow or not followed for both users 
+  useEffect(()=>{
+    if(!user || !user._id) return ;
+    const checkFollowStatus = async() =>{
+        const response = await fetch("http://localhost:3000/user/checkFollowStatus", {
+          method: "post",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ currentuserid: user._id, otheruserid: user2_id }),
+        });
+        if(!response.ok) throw new Error('failed to fetch from the backnd in (check follow status )')
+        
+          const data = await response.json();
+          setFollower(data.isFollowing);
+    }
+    checkFollowStatus();
+  },[user,user2_id]);
+
   // Fetch user data
   useEffect(() => {
     if (!user2_id) return;
-
+    
+    if(user._id === user2_id){
+      navigate(`/userprofile/${user._id}`)
+    }
     const fetchUserData = async () => {
       setLoading(true);
       try {
@@ -61,8 +81,8 @@ const UserPage = () => {
          })
       })
       const data = await response.json();
-
-      console.log(data)
+      console.log(data.isFollowing)
+      setFollower(data.isFollowing);
     } catch (error) {
       console.log('error in adding the user' , error)
     }
@@ -98,6 +118,10 @@ const UserPage = () => {
 
   return (
     <div className="w-full mx-5 xl:mx-auto max-w-6xl p-6">
+
+
+
+
       <div className="bg-white rounded-xl shadow-lg p-8">
         {/* User Profile Section */}
         <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8">
@@ -114,6 +138,8 @@ const UserPage = () => {
             <p className="text-gray-600 mt-2">
               {userPageOwner.bio || "No bio available"}
             </p>
+
+
               </div>
             
               <button
@@ -122,8 +148,8 @@ const UserPage = () => {
                 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2
                 focus:ring-blue-400 focus:ring-opacity-75"
                 >
-                {/* {follower ? "Unfollow" : "Follow"} */}
-                add
+                {follower ? "Unfollow" : "Follow"}
+                
               </button>
               </div>
         </div>

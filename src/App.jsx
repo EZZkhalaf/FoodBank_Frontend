@@ -7,7 +7,6 @@ import Login from './Pages/Login';
 import NavBar from './Components/NavBar';
 import RecipeInfo from './Pages/RecipeInfo';
 import UserProfile from './Pages/UserProfile';
-import UserRecipes from './Pages/UserRecipes';
 import { Component, useContext, useEffect, useState } from 'react';
 import Register from './Pages/Register';
 import { useNavigate } from 'react-router-dom';
