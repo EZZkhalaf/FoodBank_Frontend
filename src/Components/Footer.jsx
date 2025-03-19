@@ -36,17 +36,17 @@ const Footer = () => {
             <h3 className="font-medium text-lg mb-4">Categories</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/findRecipes?category=breakfast" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/findRecipes?category=Breakfast" className="text-muted-foreground hover:text-foreground transition-colors">
                   Breakfast
                 </Link>
               </li>
               <li>
-                <Link to="/recipes?category=main-course" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/findRecipes?category=Main-Course" className="text-muted-foreground hover:text-foreground transition-colors">
                   Main Course
                 </Link>
               </li>
               <li>
-                <Link to="/recipes?category=dessert" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/findRecipes?category=Dessert" className="text-muted-foreground hover:text-foreground transition-colors">
                   Dessert
                 </Link>
               </li>

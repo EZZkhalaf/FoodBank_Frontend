@@ -61,6 +61,7 @@ const RecipeType = ({ selectedRecipeType, setSelectedRecipeType }) => {
   const recipeTypes = [
     'Appetizer',
     'Main Course',
+    'Breakfast',
     'Dessert',
     'Soup',
     'Salad',

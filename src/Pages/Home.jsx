@@ -197,10 +197,10 @@ const Home = () => {
   const featuredRecipe = recipes[0];
   console.log(featuredRecipe)
   return (
-    <div className="flex flex-col min-h-screen bg-sand-50">
+    <div className="flex flex-col min-h-screen ">
       <NavBar />
 
-      <main className="pt-24 flex-grow">
+      <main className="pt-14 flex-grow">
         {/* Hero Section */}
         <section className="relative h-[70vh] min-h-[600px] flex items-center justify-center bg-sand-50">
           <div className="absolute inset-0 overflow-hidden">
