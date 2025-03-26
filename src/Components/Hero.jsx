@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import HeroImage from '../assets/HeroImage.png'; // Importing the Hero image
+import { useNavigate } from 'react-router-dom';
 
 const Hero = ({ user }) => {
   const [animate, setAnimate] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setAnimate(true); // Trigger animation once when the component mounts
