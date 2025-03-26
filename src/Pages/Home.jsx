@@ -195,7 +195,7 @@ const Home = () => {
   if (error) return <div className="text-center p-8 text-red-500">Error: {error}</div>;
 
   const featuredRecipe = recipes[0];
-  console.log(featuredRecipe)
+  // console.log(featuredRecipe)
   return (
     <div className="flex flex-col min-h-screen ">
       <NavBar />

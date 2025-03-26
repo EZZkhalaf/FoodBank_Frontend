@@ -6,6 +6,9 @@ const FeaturedRecipe = ({ recipe }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
+    <Link
+      to={`/recipe/${recipe._id}`}
+    >
     <div className="grid md:grid-cols-2 gap-8 bg-sand-50 rounded-2xl overflow-hidden ">
       <div className="relative h-full">
         <div className={`absolute inset-0 bg-sand-100 ${!imageLoaded ? 'animate-pulse' : ''}`} />
@@ -49,6 +52,8 @@ const FeaturedRecipe = ({ recipe }) => {
         </Link>
       </div>
     </div>
+    </Link>
+
   );
 };
 

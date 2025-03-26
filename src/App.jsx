@@ -1,5 +1,3 @@
-
-
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Home from './Pages/Home';
@@ -48,22 +46,17 @@ const App = () => {
       const parsedUser = JSON.parse(storedUser);
       if (!user) {
         loadUser(parsedUser);
-        navigate('/');
+        // Delay navigation to ensure the user context is updated
+        setTimeout(() => {
+          navigate('/');
+        }, 500);
       }
     }
-    
-    // console.log(user)
   }, [user, dispatch, navigate]);
+  
 
 
-  // useEffect(() => {//used for checking the api calls (not used anymore )
-  //   // Check if user has an id after it's loaded from localStorage or set by context
-  //   if (user && user._id) {
-  //     console.log(`The logged-in user's ID is: ${user._id}`);
-  //   } else {
-  //     console.log('No user ID found');
-  //   }
-  // }, [user]);
+ 
 
   return (
     <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] w-full '>
@@ -83,4 +76,9 @@ const App = () => {
 }
 
 export default App;
+
+
+
+
+
 

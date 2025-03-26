@@ -16,31 +16,3 @@ createRoot(document.getElementById('root')).render(
   
 )
 
-
-
-// /src
-//   /components
-//     - Navbar.jsx(done)
-//     - Footer.jsx(done)
-//     - RecipeCard.jsx
-//     - RecipeForm.jsx
-//     - SearchBar.jsx
-//   /pages
-//     - Home.jsx(working on it)
-//     - Login.jsx(done)
-//     - SignUp.jsx(done)
-//     - UserProfile.jsx
-//     - Recipes.jsx
-//     - RecipeDetails.jsx
-//     - AddRecipe.jsx
-//     - EditRecipe.jsx
-//   /context
-//     - AuthContext.jsx
-//     - RecipeContext.jsx
-//   /routes
-//     - AppRoutes.jsx
-//   /assets
-//   /styles
-//   /utils
-//   main.jsx
-//   App.jsx

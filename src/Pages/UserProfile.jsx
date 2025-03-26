@@ -1,15 +1,10 @@
-
-
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAuthContext } from '../Context/AuthContext';
-import defaultPhoto from '../assets/defaultPhoto.png'; 
+import defaultPhoto from '../assets/defaultPhoto.png';
 import ProfileRecipeElement from '../Components/profileRecipeElement';
 import { IoMdSettings } from "react-icons/io";
 import Footer from '../Components/Footer';
-import NavBar from '../Components/NavBar';
 import { useNavigate } from 'react-router-dom';
-
 
 const UserProfile = () => {
   const { user, dispatch } = useAuthContext();
@@ -21,37 +16,39 @@ const UserProfile = () => {
     username,
     bio,
     profilePic,
-    friends,
     followers,
     following,
     ownRecipes,
-    savedRecipes,
   } = user || {};
+
+  const [profileUsername, setProfileUsername] = useState(username || "");
+  const [profileBio, setProfileBio] = useState(bio || "");
+  const [currentProfilePicture, setCurrentProfilePicture] = useState(profilePic || defaultPhoto);
+  const [previewImage, setPreviewImage] = useState(profilePic || defaultPhoto);
   
-  const [profileUsername , setProfileUsername] = useState(username);
-  const [profileBio , setProfileBio] = useState(bio)
-  const [currentProfilePicture , setCurrentProfilePicture] = useState(profilePic);
-  
-  let userProfilePic = profilePic && profilePic !== "/assets/defaultPhoto.png" ? profilePic : defaultPhoto;
- 
- 
-  useEffect(()=>{
-    if(!user) navigate('/login')
-  },[user,navigate]);
+  const fileInputRef = useRef(null);
+
+  // Helper function to determine which image to display
+  const getProfileImage = () => {
+    // Check if profilePic exists and is valid
+    if (profilePic && profilePic !== "/assets/defaultPhoto.png") {
+      return profilePic;
+    }
+    return defaultPhoto;
+  };
 
   useEffect(() => {
-    
+    if (!user) navigate('/login');
+  }, [user, navigate]);
+
+  useEffect(() => {
     const fetchUserRecipes = async () => {
-      if (!user?._id) return ;
+      if (!user?._id) return;
 
       setLoading(true);
       try {
         const res = await fetch(`http://localhost:3000/recipe/getUserRecipes/${user._id}`);
-        
-        if (!res.ok) {
-          throw new Error(`Error: ${res.statusText}`);
-        }
-
+        if (!res.ok) throw new Error(`Error: ${res.statusText}`);
         const data = await res.json();
         setRecipes(data);
       } catch (error) {
@@ -64,40 +61,36 @@ const UserProfile = () => {
     if (user?._id) {
       fetchUserRecipes();
     }
-  }, [user?._id]);
+  }, [user]);
 
-
-  const editUser = async(e) =>{
+  const editUser = async (e) => {
     e.preventDefault();
-    try{
-      const response = await fetch('http://localhost:3000/user/updateTheUserProfile' , {
-        method: 'post',
-        headers: {'Content-Type' : 'application/json'},
-        body: JSON.stringify({
-          newUsername:profileUsername,
-          newBio:profileBio,
-          newPicture:'',
-          userId:user._id
-        })
+    const formData = new FormData();
+    formData.append('newUsername', profileUsername);
+    formData.append('newBio', profileBio);
+    formData.append('userId', user._id);
+    formData.append('image', previewImage);
+
+    try {
+      const response = await fetch('http://localhost:3000/user/updateTheUserProfile', {
+        method: 'POST',
+        body: formData
       });
 
       const data = await response.json();
-      console.log(data.message)
-
-      dispatch({ type: 'SET_USER', payload: data.user });
-
-    }catch(error){
+      console.log(data.message);
+      setIsEditing(false);
+    } catch (error) {
       console.error('Error updating the user data:', error);
     }
-  }
+  };
 
   useEffect(() => {
-    if (!user._id) return;
+    if (!user?._id) return;
 
     const fetchUserData = async () => {
       try {
         const res = await fetch(`http://localhost:3000/user/${user._id}`);
-
         const updatedUser = await res.json();
         dispatch({ type: 'SET_USER', payload: updatedUser });
       } catch (error) {
@@ -108,122 +101,126 @@ const UserProfile = () => {
     fetchUserData();
     const interval = setInterval(fetchUserData, 10000);
     return () => clearInterval(interval);
-  }, [user?._id]);
+  }, [user?._id, dispatch]);
+
+  const handleProfilePicChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const image64 = reader.result;
+      setPreviewImage(image64);
+    };
+    reader.readAsDataURL(file);
+  };
 
   if (loading) return <div>Loading...</div>;
+
   return (
-    <div className='flex flex-col min-h-screen bg-sand-50 w-fulll'>
-      <div className='bg-white rounded-xl w-full  p-8'>
-    
-          
-          <div className='flex flex-col md:flex-row items-center justify-between w-full mt-10'>
-            {/* Left Section: Profile Picture and Info */}
-            <div className="flex items-center space-x-6">
-
-              {/* Profile Picture */}
-              {/* <img
-                src={userProfilePic}
-                alt={`${username}'s profile`} 
-                className='w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg'
-                /> */}
-              
-                {isEditing &&(
-                  <div className="flex items-center">
-                      <div className="flex ">
-                      <img
-                        src={userProfilePic}
-                        alt={`${username}'s profile`} 
-                        className='w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg'
-                        />
-                        <div className='flex flex-col'>
-
-                        {/* Username Input */}
-                          <div className="bg-gray-300 m-3 p-2 rounded-md hover:bg-gray-400 transition">
-                              <input
-                                type="text"
-                                value={profileUsername}
-                                placeholder="Enter username"
-                                onChange={(e) => setProfileUsername(e.target.value)}
-                                className="w-full bg-transparent p-2 focus:outline-none"
-                                />
-                          </div>
-
-                          {/* Bio Input */}
-                          <div className="bg-gray-300 m-3 p-2 rounded-md hover:bg-gray-400 transition">
-                              <input
-                                type="text"
-                                value={profileBio}
-                                placeholder="Enter your bio"
-                                onChange={(e) => setProfileBio(e.target.value)}
-                                className="w-full bg-transparent p-2 focus:outline-none"
-                                />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Submit Button */}
-                      <button 
-                        className="bg-green-500 text-white font-semibold
-                         px-4 py-2 rounded-md m-3 hover:bg-green-600 transition-all"
-                        onClick={e => editUser(e)}
-                         >
-                        Submit
-                      </button>
+    <div className='flex flex-col min-h-screen bg-sand-50 w-full'>
+      <div className='bg-white rounded-xl w-full p-8'>
+        {/* Profile Section */}
+        <div className='flex flex-col md:flex-row items-center justify-between w-full mt-10'>
+          {/* Left Section: Profile Picture and Info */}
+          <div className="flex items-center space-x-6">
+            {isEditing ? (
+              <div className="flex items-center">
+                <div className="flex">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfilePicChange}
+                    ref={fileInputRef}
+                    className="hidden"
+                  />
+                  {/* Clickable profile picture */}
+                  <img
+                    src={previewImage || defaultPhoto}
+                    alt="Profile"
+                    className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg cursor-pointer"
+                    onClick={() => fileInputRef.current.click()}
+                    onError={(e) => {
+                      e.target.src = defaultPhoto;
+                    }}
+                  />
+                  <div className='flex flex-col'>
+                    {/* Username Input */}
+                    <div className="bg-gray-300 m-3 p-2 rounded-md hover:bg-gray-400 transition">
+                      <input
+                        type="text"
+                        value={profileUsername}
+                        placeholder="Enter username"
+                        onChange={(e) => setProfileUsername(e.target.value)}
+                        className="w-full bg-transparent p-2 focus:outline-none"
+                      />
                     </div>
-
-                )} 
-                
-                 {!isEditing &&(
-              
-                   <div className='text-center md:text-left flex '>
-                          <img
-                            src={userProfilePic}
-                            alt={`${username}'s profile`} 
-                            className='w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg'
-                            />
-                          <div className='flex flex-col items-center justify-center m-4'>
-        
-                            <h1 className='text-3xl font-bold text-gray-800'>{profileUsername}</h1>
-                            <p className='text-gray-600 mt-2'>{profileBio}</p>
-     
-                          </div>
-     
+                    {/* Bio Input */}
+                    <div className="bg-gray-300 m-3 p-2 rounded-md hover:bg-gray-400 transition">
+                      <input
+                        type="text"
+                        value={profileBio}
+                        placeholder="Enter your bio"
+                        onChange={(e) => setProfileBio(e.target.value)}
+                        className="w-full bg-transparent p-2 focus:outline-none"
+                      />
                     </div>
-                )}   
-            </div>
-
-            {/* Right Section: Settings Button */}
-            <div className="ml-auto">
-              <button
-                onClick={() => {setIsEditing(!isEditing)}}
-                className="p-3 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 focus:outline-none"
-              >
-                <IoMdSettings size={18} />
-              </button>
-            </div>
+                  </div>
+                </div>
+                {/* Submit Button */}
+                <button
+                  className="bg-green-500 text-white font-semibold px-4 py-2 
+                  rounded-md m-3 hover:bg-green-600 transition-all"
+                  onClick={editUser}
+                >
+                  Submit
+                </button>
+              </div>
+            ) : (
+              <div className='text-center md:text-left flex'>
+                <img
+                  src={getProfileImage()}
+                  alt={`${profileUsername}'s profile`}
+                  className='w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg'
+                  onError={(e) => {
+                    e.target.src = defaultPhoto;
+                  }}
+                />
+                <div className='flex flex-col items-center justify-center m-4'>
+                  <h1 className='text-3xl font-bold text-gray-800'>{profileUsername}</h1>
+                  <p className='text-gray-600 mt-2'>{profileBio}</p>
+                </div>
+              </div>
+            )}
           </div>
+          {/* Right Section: Settings Button */}
+          <div className="ml-auto">
+            <button
+              onClick={() => setIsEditing(!isEditing)}
+              className="p-3 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 focus:outline-none"
+            >
+              <IoMdSettings size={18} />
+            </button>
+          </div>
+        </div>
 
-  
         {/* Social Stats */}
-        <div className='grid grid-cols-3 md:grid-cols-3 gap-4 mt-8 text-center'>
+        <div className='grid grid-cols-3 gap-4 mt-8 text-center'>
           <div className='p-4 bg-gray-50 rounded-lg'>
             <p className='text-xl font-bold text-gray-800'>{followers?.length || 0}</p>
             <p className='text-gray-600'>Followers</p>
           </div>
-  
           <div className='p-4 bg-gray-50 rounded-lg'>
             <p className='text-xl font-bold text-gray-800'>{following?.length || 0}</p>
             <p className='text-gray-600'>Following</p>
           </div>
-  
           <div className='p-4 bg-gray-50 rounded-lg'>
             <p className='text-xl font-bold text-gray-800'>{ownRecipes?.length || 0}</p>
             <p className='text-gray-600'>Recipes</p>
           </div>
         </div>
-        <div className='flex justify-center items-center mt-10'>
 
-        <div className="w-[40vw] border-t-2 border-sand-200"></div>
+        {/* Divider */}
+        <div className='flex justify-center items-center mt-10'>
+          <div className="w-[40vw] border-t-2 border-sand-200"></div>
         </div>
 
         {/* Recipes Section */}
@@ -237,7 +234,7 @@ const UserProfile = () => {
               Create Recipe
             </button>
           </div>
-  
+
           {/* Own Recipes */}
           <div className='mb-8'>
             <h3 className='text-xl font-semibold text-gray-700 mb-4'>My Recipes</h3>
@@ -250,9 +247,9 @@ const UserProfile = () => {
                     recipe_image={recipe.recipe_image}
                     recipe_name={recipe.recipe_title}
                     recipe_description={recipe.recipe_description}
-                    recipeType={recipe.type} 
+                    recipeType={recipe.type}
                     cookingTime={recipe.cookingTime}
-                    difficulty={recipe.difficullty}
+                    difficulty={recipe.difficulty}
                   />
                 ))
               ) : (
@@ -261,49 +258,15 @@ const UserProfile = () => {
             </div>
           </div>
         </div>
-  
-        {/* Edit Profile Form */}
-        {isEditing && (
-          <form className='space-y-4 mt-6'>
-            <div>
-              <label
-               className='block text-gray-600 mb-2'
-                htmlFor='username'
-                >
-                  Username
-                </label>
-              <input 
-                type='text' 
-                id='username' 
-                value={username} 
-                onChange={(e) => dispatch({ type: 'SET_USER', payload: { ...user, username: e.target.value } })}
-                className='w-full p-2 border border-gray-300 rounded-md'
-              />
-            </div>
-            <div>
-              <label className='block text-gray-600 mb-2' htmlFor='bio'>Bio</label>
-              <textarea 
-                id='bio'
-                value={bio}
-                onChange={(e) => dispatch({ type: 'SET_USER', payload: { ...user, bio: e.target.value } })}
-                className='w-full p-2 border border-gray-300 rounded-md'
-              />
-            </div>
-            <div className='flex justify-center'>
-              <button 
-                type='submit'
-                className='px-6 py-2 bg-green-500 text-white rounded-md'
-              >
-                Save Changes
-              </button>
-            </div>
-          </form>
-        )}
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
-  
 };
 
 export default UserProfile;
+
+
+
+
+

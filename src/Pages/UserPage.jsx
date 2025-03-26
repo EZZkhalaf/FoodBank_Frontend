@@ -118,10 +118,6 @@ const UserPage = () => {
 
   return (
     <div className="w-full mx-5 xl:mx-auto max-w-6xl p-6">
-
-
-
-
       <div className="bg-white rounded-xl shadow-lg p-8">
         {/* User Profile Section */}
         <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8">
@@ -180,7 +176,7 @@ const UserPage = () => {
         <div className="mt-12">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Recipes</h2>
           <div className="mb-8">
-            <h3 className="text-xl font-semibold text-gray-700 mb-4">My Recipes</h3>
+            <h3 className="text-xl font-semibold text-gray-700 mb-4">last Recipes</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {recipes.length > 0 ? (
                 recipes.map((recipe) => (

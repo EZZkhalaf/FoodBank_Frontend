@@ -6,7 +6,7 @@ import { CiBookmarkPlus } from "react-icons/ci";
 import { useAuthContext } from '../Context/AuthContext';
 import { IoMdBookmark } from "react-icons/io";
 import { Clock, Utensils } from 'lucide-react';
-
+import defaultRecipeImage from '../assets/defaultRecipeImage.jpg'
 const RecipeElement = ({ RecipeId, recipe_image, recipe_name, recipe_description , recipeType ,cookingTime , difficulty}) => {
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -101,9 +101,14 @@ const RecipeElement = ({ RecipeId, recipe_image, recipe_name, recipe_description
               imageLoaded ? 'opacity-100' : 'opacity-0'
             }`}
             src={recipe_image}
-            alt={recipe_name}
+            alt={recipe_name ||  "Default Recipe Image"}
             onLoad={() => setImageLoaded(true)}
+            onError={(e) => {
+              e.target.src = defaultRecipeImage;
+              e.target.alt = "Default Recipe Image";
+            }}
           />
+                
           
           {/* Bookmark Button */}
           <div className="absolute top-3 right-3">
