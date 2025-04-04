@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import NavBar from "../Components/NavBar";
 import { IoMdBookmark } from "react-icons/io";
@@ -31,6 +32,8 @@ const RecipeInfo = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestedIngredients, setSuggestedIngredients] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+
+  const fileInputRef = useRef(null);
 
   // Initialize edited values when recipe data is available
   useEffect(() => {
@@ -100,22 +103,27 @@ const RecipeInfo = () => {
   const [recipeOwner] = recipe?.recipe_user || [];
   const isRecipeOwner = user && recipe && user._id === recipeOwner;
 
+  const [newRecipeImage, setNewRecipeImage] = useState(defaultRecipeImage);
+  console.log(recipe);
   // Save edited recipe
   const saveEditedRecipe = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/recipe/${RecipeId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          recipe_title: newRecipeTitle,
-          ingredients: newIngredients,
-          instructions: newInstruction,
-          recipe_description: newRecipeDescription,
-          cookingTime: newCookingTime
-        })
-      });
 
-      if (!response.ok) throw new Error('Failed to update recipe');
+
+
+      let formData = new FormData();
+      formData.append('newRecipe_title', newRecipeTitle);
+      formData.append('newIngredients', JSON.stringify(newIngredients));
+      formData.append('newInstructions', newInstruction);
+      formData.append('newRecipe_description', newRecipeDescription);
+      formData.append('newCookingTime', newCookingTime);
+      formData.append('newRecipe_image', newRecipeImage); // File object
+
+      console.log(newRecipeImage);
+
+      const response = await fetch(`http://localhost:3000/recipe/${RecipeId}`, {method: 'post', body: formData});
+
+      // if (!response.ok) throw new Error('Failed to update recipe');
       const updatedRecipe = await response.json();
       setRecipe(updatedRecipe);
       setIsEditing(false);
@@ -137,72 +145,19 @@ const RecipeInfo = () => {
     }
   };
 
-  // Search for ingredients
-  useEffect(() => {
-    if (searchQuery.trim() === '') {
-      setSuggestedIngredients([]);
-      return;
-    }
+  const handleRecipeImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-    const searchIngredients = async () => {
-      setIsSearching(true);
-      try {
-        const response = await fetch('http://localhost:3000/ingredients/searchIngredient', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ingredient_name: searchQuery }),
-        });
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.message || 'Error fetching ingredients');
-        }
-
-        // Map the response to the structure your component expects
-        const formattedIngredients = data.map(ingredient => ({
-          _id: ingredient._id,
-          name: ingredient.ingredient_name,
-          unit: ingredient.unit || 'unit',
-          description: ingredient.description || ''
-        }));
-
-        setSuggestedIngredients(formattedIngredients);
-      } catch (error) {
-        console.error('Error searching ingredients:', error);
-      } finally {
-        setIsSearching(false);
-      }
+    // If Base64 is needed
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setNewRecipeImage(reader.result);
     };
+    reader.readAsDataURL(file);
 
-    const searchDebounce = setTimeout(searchIngredients, 300);
-    return () => clearTimeout(searchDebounce);
-  }, [searchQuery]);
-
-  // Add ingredient to recipe
-  const addIngredient = (ingredient) => {
-    const updatedIngredients = [...newIngredients];
-    // Check if ingredient already exists
-    const existingIndex = updatedIngredients.findIndex(i => i.name === ingredient.name);
-    if (existingIndex !== -1) {
-      // Update quantity if it already exists
-      updatedIngredients[existingIndex].quantity = `1 ${ingredient.unit || 'unit'}`;
-    } else {
-      // Add new ingredient
-      updatedIngredients.push({
-        name: ingredient.name,
-        quantity: `1 ${ingredient.unit || 'unit'}`,
-        _id: ingredient._id
-      });
-    }
-    setNewIngredients(updatedIngredients);
-    setSearchQuery('');
-    setSuggestedIngredients([]);
-  };
-
-  // Remove ingredient from recipe
-  const removeIngredient = (index) => {
-    const updatedIngredients = newIngredients.filter((_, i) => i !== index);
-    setNewIngredients(updatedIngredients);
+    // If a file object is needed
+    setNewRecipeImage(file);
   };
 
   if (loading) return <div className="text-center text-gray-700 py-8">Loading...</div>;
@@ -217,15 +172,37 @@ const RecipeInfo = () => {
           <div className="relative bg-white rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-lg sm:shadow-xl lg:shadow-2xl overflow-hidden ring-1 sm:ring-2 ring-purple-200">
             {/* Recipe Header */}
             <div className="relative">
-              <img
-                src={recipe.recipe_image}
-                alt={recipe.recipe_title || "Default Recipe Image"}
-                className="w-full h-48 xs:h-64 sm:h-80 md:h-96 object-cover"
-                onError={(e) => {
-                  e.target.src = defaultRecipeImage;
-                  e.target.alt = "Default Recipe Image";
-                }}
-              />
+              {isEditing ? (
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleRecipeImageChange}
+                    ref={fileInputRef}
+                    className="hidden"
+                  />
+                  <img
+                    src={newRecipeImage}
+                    alt={recipe.recipe_title || "Default Recipe Image"}
+                    className="w-full h-48 xs:h-64 sm:h-80 md:h-96 object-cover rounded-lg shadow-md"
+                    onClick={() => fileInputRef.current.click()}
+                    onError={(e) => {
+                      e.target.src = defaultRecipeImage;
+                      e.target.alt = "Default Recipe Image";
+                    }}
+                  />
+                </div>
+              ) : (
+                <img
+                  src={recipe.recipe_image || defaultRecipeImage}
+                  alt={recipe.recipe_title || "Default Recipe Image"}
+                  className="w-full h-48 xs:h-64 sm:h-80 md:h-96 object-cover"
+                  onError={(e) => {
+                    e.target.src = defaultRecipeImage;
+                    e.target.alt = "Default Recipe Image";
+                  }}
+                />
+              )}
               
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               
@@ -266,6 +243,12 @@ const RecipeInfo = () => {
                         onClick={cancelEditing}
                       >
                         Cancel
+                      </button>
+                      <button
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base bg-blue-500 text-white rounded-full shadow-lg"
+                        onClick={() => fileInputRef.current.click()}
+                      >
+                        Choose Image
                       </button>
                     </div>
                   ) : (
@@ -505,3 +488,126 @@ const RecipeInfo = () => {
 };
 
 export default RecipeInfo;
+
+// // pages/RecipeInfo.js
+// import React, { useRef } from "react";
+// import { useParams } from "react-router-dom";
+// import NavBar from "../Components/NavBar";
+// import defaultRecipeImage from '../assets/defaultRecipeImage.jpg';
+// import Footer from "../Components/Footer";
+// import { useAuthContext } from "../Context/AuthContext";
+// import { useRecipe } from "../hooks/useRecipe";
+// import RecipeHeader from "../Components/RecipeHeader";
+// import CreatedBy from "../Components/CreatedBy";
+// import CookingTime from "../Components/CookingTime";
+// import IngredientsList from "../Components/IngredientsList";
+// import Instructions from "../Components/Instructions";
+
+// const RecipeInfo = () => {
+//   const { RecipeId } = useParams();
+//   const { user } = useAuthContext();
+//   const fileInputRef = useRef(null);
+
+//   const {
+//     recipe,
+//     recipeUser,
+//     loading,
+//     isBookmarked,
+//     isEditing,
+//     newRecipeTitle,
+//     setNewRecipeTitle,
+//     newIngredients,
+//     setNewIngredients,
+//     newInstruction,
+//     setNewInstruction,
+//     newRecipeDescription,
+//     setNewRecipeDescription,
+//     newCookingTime,
+//     setNewCookingTime,
+//     newRecipeImage,
+//     setNewRecipeImage,
+//     saveEditedRecipe,
+//     cancelEditing,
+//     setIsEditing,
+//     searchQuery,
+//     setSearchQuery,
+//     suggestedIngredients,
+//     addIngredient,
+//     removeIngredient
+//   } = useRecipe(RecipeId, user);
+
+//   // Check if user is the recipe owner
+//   const [recipeOwner] = recipe?.recipe_user || [];
+//   const isRecipeOwner = user && recipe && user._id === recipeOwner;
+
+//   if (loading) return <div className="text-center text-gray-700 py-8">Loading...</div>;
+//   if (!recipe) return <div className="text-center text-gray-700 py-8">No recipe found.</div>;
+
+//   return (
+//     <div className="flex flex-col min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100">
+//       <NavBar className="sticky top-0 bg-white/90 backdrop-blur-md shadow-sm z-50" />
+      
+//       <main className="flex-grow">
+//         <div className="max-w-7xl mx-auto px-4 xs:px-6 sm:px-8 lg:px-10 py-6 sm:py-8 lg:py-12">
+//           <RecipeHeader
+//             recipe={recipe}
+//             recipeUser={recipeUser}
+//             isEditing={isEditing}
+//             newRecipeTitle={newRecipeTitle}
+//             setNewRecipeTitle={setNewRecipeTitle}
+//             setIsEditing={setIsEditing}
+//             saveEditedRecipe={saveEditedRecipe}
+//             cancelEditing={cancelEditing}
+//             fileInputRef={fileInputRef}
+//             newRecipeImage={newRecipeImage}
+//             setNewRecipeImage={setNewRecipeImage}
+//             defaultRecipeImage={defaultRecipeImage}
+//             isRecipeOwner={isRecipeOwner}
+//             isBookmarked={isBookmarked}
+//           />
+
+//           {/* Recipe Details Grid */}
+//           <div className="p-4 sm:p-6 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+//             {/* Left Column */}
+//             <div>
+//               <CreatedBy recipeUser={recipeUser} defaultRecipeImage={defaultRecipeImage} />
+//               <CookingTime 
+//                 isEditing={isEditing} 
+//                 newCookingTime={newCookingTime} 
+//                 setNewCookingTime={setNewCookingTime} 
+//                 recipe={recipe} 
+//               />
+//             </div>
+
+//             {/* Right Column */}
+//             <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 rounded-xl sm:rounded-2xl">
+//               <IngredientsList
+//               recipe ={recipe}
+//                 isEditing={isEditing}
+//                 newIngredients={newIngredients}
+//                 setNewIngredients={setNewIngredients}
+//                 suggestedIngredients={suggestedIngredients}
+//                 setSearchQuery={setSearchQuery}
+//                 searchQuery={searchQuery}
+//                 addIngredient={addIngredient}
+//                 removeIngredient={removeIngredient}
+//                 recipe={recipe}
+//               />
+//             </div>
+//           </div>
+
+//           <Instructions 
+//             isEditing={isEditing} 
+//             newInstruction={newInstruction} 
+//             setNewInstruction={setNewInstruction} 
+//             recipe={recipe} 
+//           />
+//         </div>
+//       </main>
+
+//       <Footer className="bg-white/90 backdrop-blur-md shadow-inner" />
+//     </div>
+//   );
+// };
+
+// export default RecipeInfo;

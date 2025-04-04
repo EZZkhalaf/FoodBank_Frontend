@@ -1,3 +1,7 @@
+
+
+
+
 import React, { useEffect, useRef, useState } from 'react';
 import { useAuthContext } from '../Context/AuthContext';
 import defaultPhoto from '../assets/defaultPhoto.png';
@@ -6,8 +10,10 @@ import { IoMdSettings } from "react-icons/io";
 import Footer from '../Components/Footer';
 import { useNavigate } from 'react-router-dom';
 
+
 const UserProfile = () => {
   const { user, dispatch } = useAuthContext();
+  // const {isDark , toggleTheme} = useTheme();
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -23,7 +29,6 @@ const UserProfile = () => {
 
   const [profileUsername, setProfileUsername] = useState(username || "");
   const [profileBio, setProfileBio] = useState(bio || "");
-  const [currentProfilePicture, setCurrentProfilePicture] = useState(profilePic || defaultPhoto);
   const [previewImage, setPreviewImage] = useState(profilePic || defaultPhoto);
   
   const fileInputRef = useRef(null);
@@ -192,7 +197,10 @@ const UserProfile = () => {
             )}
           </div>
           {/* Right Section: Settings Button */}
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center">
+
+           
+           
             <button
               onClick={() => setIsEditing(!isEditing)}
               className="p-3 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 focus:outline-none"
@@ -259,7 +267,8 @@ const UserProfile = () => {
           </div>
         </div>
       </div>
-      <Footer />
+        <Footer />
+      
     </div>
   );
 };
