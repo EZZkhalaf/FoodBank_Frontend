@@ -2,13 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import RecipeElement from '../Components/RecipeElement';
-import { useScrollAnimation } from '../hooks/useScrollAnimation';
+// import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { motion } from 'framer-motion';
 
 const CategorySection = ({ category, recipes }) => {
   if (recipes.length === 0) return null;
   
-  const scrollAnimation = useScrollAnimation();
+  // const scrollAnimation = useScrollAnimation();
 
   return (
     <motion.section
@@ -16,7 +16,6 @@ const CategorySection = ({ category, recipes }) => {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      {...scrollAnimation}  // Spread the scroll animation props
     >
       <div className="flex justify-center">
         <div className="w-[30vw] border-t-2 border-sand-200"></div>

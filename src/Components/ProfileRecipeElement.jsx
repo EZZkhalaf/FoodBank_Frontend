@@ -77,6 +77,11 @@ import defaultRecipeImage from '../assets/defaultRecipeImage.jpg';
 
 const ProfileRecipeElement = ({ RecipeId, recipe_image, recipe_name, cookingTime, difficulty }) => {
   const [displayedImage, setDisplayedImage] = useState(recipe_image || defaultRecipeImage);
+  
+  
+
+
+
 
   useEffect(() => {
     if (recipe_image && (recipe_image.startsWith("http") || /^data:image\/(png|jpe?g|gif|webp);base64,/.test(recipe_image))) {

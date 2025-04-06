@@ -1,5 +1,5 @@
 // components/IngredientsList.js
-import React , { useState } from 'react';
+import React , { useState ,useEffect } from 'react';
 
 const IngredientsList = ({ 
   isEditing, 
@@ -12,6 +12,19 @@ const IngredientsList = ({
   removeIngredient,
   recipe // Ensure recipe is passed as a prop
 }) => {
+
+
+  useEffect(() => {
+    if (isEditing && recipe?.ingredients?.length > 0) {
+      setNewIngredients(recipe.ingredients.map((ing) => ({
+        ...ing,
+        quantity: ing.quantity || '',
+      })));
+    }
+  }, [isEditing, recipe]);
+
+
+
   return (
     <div className="mb-6 sm:mb-8">
       <h3 className="text-lg font-semibold text-gray-800 mb-3 sm:mb-4">Ingredients</h3>
@@ -51,8 +64,8 @@ const IngredientsList = ({
             <div className="mt-3 sm:mt-4">
               <h4 className="text-base font-semibold mb-2">Added Ingredients</h4>
               <div className="max-h-[150px] sm:max-h-[200px] overflow-y-auto space-y-2">
-                {newIngredients.map((ingredient, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 sm:p-3 bg-white rounded-lg shadow-sm">
+                {newIngredients.map((ingredient) => (
+                  <div key={ingredient._id || ingredient.ingredient_name} className="flex items-center justify-between p-2 sm:p-3 bg-white rounded-lg shadow-sm">
                     <div className="flex flex-col w-full">
                       <h3 className="font-medium text-gray-800 text-sm sm:text-base">{ingredient.name}</h3>
                       <input
