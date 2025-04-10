@@ -59,14 +59,13 @@ const App = () => {
  
 
   return (
-    <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] w-full '>
+    <div className='px-4 sm:px-[5vw]  w-full  '>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login loadUser={loadUser} />} />
         <Route path='/register' element={<Register loadUser={loadUser} />} />
         <Route path='/recipe/:RecipeId' element={<RecipeInfo />} />
         <Route path='/userprofile/:userId' element={<UserProfile />} />
-        {/* <Route path='/ownRecipes' element={<UserRecipes />} /> */}
         <Route path='/savedRecipes' element={<SavedRecipes />} />
         <Route path='/findRecipes' element={<FindRecipes />} />
         <Route path='/userPage/:user2_id' element={<UserPage  />}/>

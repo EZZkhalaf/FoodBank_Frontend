@@ -87,7 +87,7 @@ const UserPage = () => {
       console.log('error in adding the user' , error)
     }
   }
-
+  console.log(recipes)
   // Fetch user recipes
   useEffect(() => {
     if (!userPageOwner?._id) return; // Ensure userPageOwner._id is available
@@ -185,6 +185,8 @@ const UserPage = () => {
                     RecipeId={recipe._id}
                     recipe_image={recipe.recipe_image}
                     recipe_name={recipe.recipe_title}
+                    cookingTime = {recipe.cookingTime}
+                    difficulty={recipe.difficullty}
                   />
                 ))
               ) : (
