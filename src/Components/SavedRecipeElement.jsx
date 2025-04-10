@@ -104,12 +104,12 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { IoMdBookmark } from "react-icons/io";
 import { useAuthContext } from '../Context/AuthContext';
-
+import defaultRecipeImage from '../assets/defaultRecipeImage.jpg';
 const SavedRecipeElement = ({ RecipeId, recipe_image, recipe_name, removeRecipe }) => {
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
   const { user } = useAuthContext();
-
+  const [displayImage , setDisplayedImage]= useState(recipe_image || defaultRecipeImage);
   // Check if the recipe is saved by the user
   useEffect(() => {
     const checkSavedStatus = async () => {
@@ -131,6 +131,18 @@ const SavedRecipeElement = ({ RecipeId, recipe_image, recipe_name, removeRecipe 
     };
 
     checkSavedStatus();
+
+
+    if(recipe_image){
+           const isBase64 = /^data:image\/(png|jpe?g|gif|webp);base64,/.test(recipe_image);
+           if (!isBase64) {
+             setDisplayedImage(defaultRecipeImage);
+           } else {
+             setDisplayedImage(recipe_image);
+           }
+         } else {
+           setDisplayedImage(defaultRecipeImage);
+         }
   }, [user._id, RecipeId]);
 
   // Handle unsaving the recipe (unbookmark)
@@ -172,7 +184,7 @@ const SavedRecipeElement = ({ RecipeId, recipe_image, recipe_name, removeRecipe 
           {/* Recipe Image */}
           <img
             className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105"
-            src={recipe_image}
+            src={displayImage}
             alt={recipe_name}
           />
 
