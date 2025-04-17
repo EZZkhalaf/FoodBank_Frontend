@@ -4,6 +4,7 @@ import { Clock, Utensils, ArrowRight } from 'lucide-react';
 
 const FeaturedRecipe = ({ recipe }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  console.log(recipe);
 
   return (
     <Link
