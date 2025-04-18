@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import IngredientElement from './IngredientElement';
+import IngredientElement from './ingredientElement';
 
 const IngredientSelection = ({ selectedItems, setSelectedItems }) => {
   const [ingredientsBucket, setIngredientsBucket] = useState([]);

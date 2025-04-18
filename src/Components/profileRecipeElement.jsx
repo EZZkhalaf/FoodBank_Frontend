@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CiBookmarkPlus } from "react-icons/ci";
@@ -9,7 +6,7 @@ import { IoMdBookmark } from "react-icons/io";
 import { Clock, Utensils } from 'lucide-react';
 
 
-const ProfileRecipeElement = ({ RecipeId, recipe_image, recipe_name, recipe_description , recipeType ,cookingTime , difficulty}) => {
+const profileRecipeElement = ({ RecipeId, recipe_image, recipe_name, recipe_description , recipeType ,cookingTime , difficulty}) => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [loading, setLoading] = useState(false);
   
@@ -68,4 +65,4 @@ const ProfileRecipeElement = ({ RecipeId, recipe_image, recipe_name, recipe_desc
       );
 }
 
-export default ProfileRecipeElement
+export default profileRecipeElement

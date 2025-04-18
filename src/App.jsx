@@ -12,6 +12,7 @@ import { useAuthContext } from './Context/AuthContext';
 import SavedRecipes from './Pages/SavedRecipes';
 import FindRecipes from './Pages/FindRecipes';
 import UserPage from './Pages/UserPage';
+import AddRecipe from './Pages/AddRecipe';
 
 const App = () => {
   const navigate = useNavigate();
@@ -70,6 +71,7 @@ const App = () => {
         <Route path='/savedRecipes' element={<SavedRecipes />} />
         <Route path='/findRecipes' element={<FindRecipes />} />
         <Route path='/userPage/:user2_id' element={<UserPage  />}/>
+        <Route path='/addRecipe' element={<AddRecipe />} />
       </Routes>
     </div>
   );

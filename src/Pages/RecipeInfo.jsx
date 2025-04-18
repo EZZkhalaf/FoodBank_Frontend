@@ -137,9 +137,9 @@ const RecipeInfo = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100">
       <NavBar className="sticky top-0 bg-white/90 backdrop-blur-md shadow-sm z-50" />
-      
+
       <main className="flex-grow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-16"> {/* Added mt-16 */}
           <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden ring-2 ring-purple-200 ring-offset-2">
             {/* Recipe Header */}
             <div className="relative">
@@ -153,9 +153,9 @@ const RecipeInfo = () => {
                   e.target.alt = "Default Recipe Image";
                 }}
               />
-              
+
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              
+
               {/* Recipe Title and Actions */}
               <div className="absolute inset-0 p-8 flex flex-col justify-end">
                 <h1 className="text-4xl font-bold text-white mb-4 drop-shadow-md">
@@ -170,7 +170,7 @@ const RecipeInfo = () => {
                     recipe.recipe_title
                   )}
                 </h1>
-                
+
                 <div className="flex items-center gap-2 md:gap-4 flex-wrap">
 
                   {isRecipeOwner && !isEditing ? (
@@ -205,7 +205,7 @@ const RecipeInfo = () => {
                       isBookmarked={isBookmarked}
                     />
                   )}
-                  
+
                   <span className="text-white bg-gray-800/90 px-3 py-1.5 rounded-full text-sm font-medium">
                     {recipe.Bookmarks?.length || 0} bookmarks
                   </span>
@@ -253,8 +253,8 @@ const RecipeInfo = () => {
                 >
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200">
-                      <img 
-                        src={recipeUser?.avatar || defaultRecipeImage} 
+                      <img
+                        src={recipeUser?.avatar || defaultRecipeImage}
                         alt="User avatar"
                         className="w-full h-full object-cover"
                       />
