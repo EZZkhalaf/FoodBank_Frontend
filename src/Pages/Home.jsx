@@ -7,7 +7,7 @@ import Footer from '../Components/Footer';
 import { useAuthContext } from '../hooks/useAuthContext';
 import RecipeElement from '../Components/RecipeElement';
 import FeaturedRecipe from '../Components/FeaturedRecipe';
-import CategorySection from '../Components/CategorySection';  // Import the CategorySection component
+import CategorySection from '../Components/CategorySection';  
 
 const Home = () => {
   const { user } = useAuthContext();
