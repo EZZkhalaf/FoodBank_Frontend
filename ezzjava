@@ -1,0 +1,19 @@
+ezzeldee awni khalaf 32015333014 
+
+
+import javax.swing.*;
+
+public class Main {
+    public static void main(String[] args) {
+        ImageIcon icon = new ImageIcon(Main.class.getResource("beauty.png"));
+
+        // 2. Show JOptionPane with the custom icon
+        JOptionPane.showMessageDialog(
+                null,
+                "Hello! This is my icon!",  
+                "Custom Icon Demo",      // Title
+                JOptionPane.PLAIN_MESSAGE, // Prevents default Java icon
+                icon
+        );
+    }
+}

@@ -599,7 +599,7 @@ const UserProfile = () => {
           <div className='flex justify-between items-center'>
             <h2 className='text-2xl font-bold text-gray-800 mb-6'>Recipes</h2>
             <button
-              onClick={() => {}}
+              onClick={() => navigate('/addRecipe')}
               className='px-6 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600'
             >
               Create Recipe

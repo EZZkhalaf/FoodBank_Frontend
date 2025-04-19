@@ -219,7 +219,10 @@ const FindRecipes = () => {
     if (initialCategory) setSelectedRecipeType(decodeURIComponent(initialCategory));
   }, [searchParams]);
 
-  const fetchRecipes = useCallback(async () => {
+
+
+
+  const fetchRecipes = useCallback(async (currentpage=1) => {
     setLoading(true);
     setError(null);
     try {
@@ -227,7 +230,10 @@ const FindRecipes = () => {
       if (!response.ok) throw new Error('Failed to fetch recipes');
       
       const data = await response.json();
+
+      // const {recipes , totalPages} = data
       setRecipes(data);
+      // setTotalPages(totalPages);
       setFilteredRecipes(data);
     } catch (error) {
       setError(error.message);
@@ -237,7 +243,7 @@ const FindRecipes = () => {
   }, []);
 
   useEffect(() => {
-    fetchRecipes();
+    fetchRecipes(currentPage);
   }, [fetchRecipes]);
 
   const applyFilters = useCallback(() => {
