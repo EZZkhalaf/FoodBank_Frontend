@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import defaultPhoto from "../assets/defaultPhoto.png";
-import ProfileRecipeElement from "../Components/profileRecipeElement";
+import profileRecipeElement from "../Components/profileRecipeElement";
 import { useAuthContext } from "../Context/AuthContext";
 import RecipeElement from "../Components/RecipeElement";
 

@@ -75,7 +75,7 @@ import { Link } from 'react-router-dom';
 import { Clock, Utensils } from 'lucide-react';
 import defaultRecipeImage from '../assets/defaultRecipeImage.jpg';
 
-const ProfileRecipeElement = ({ RecipeId, recipe_image, recipe_name, cookingTime, difficulty }) => {
+const profileRecipeElement = ({ RecipeId, recipe_image, recipe_name, cookingTime, difficulty }) => {
   const [displayedImage, setDisplayedImage] = useState(recipe_image || defaultRecipeImage);
   
   
@@ -128,4 +128,4 @@ const ProfileRecipeElement = ({ RecipeId, recipe_image, recipe_name, cookingTime
   );
 };
 
-export default ProfileRecipeElement;
+export default profileRecipeElement;

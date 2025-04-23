@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+
+import { Link, useParams, useNavigate } from "react-router-dom";
 import NavBar from "../Components/NavBar";
 import defaultRecipeImage from '../assets/defaultRecipeImage.jpg';
 import { Clock } from 'lucide-react';
@@ -20,6 +21,7 @@ const RecipeInfo = () => {
   const [loading, setLoading] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // State for edited values
   const [newRecipeTitle, setNewRecipeTitle] = useState('');
@@ -33,7 +35,6 @@ const RecipeInfo = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestedIngredients, setSuggestedIngredients] = useState([]);
   const fileInputRef = useRef(null);
-console.log(recipe)
 
   // Check if recipe is bookmarked
   useEffect(() => {
@@ -147,6 +148,36 @@ console.log(recipe)
     setNewRecipeImage(file);
   };
 
+  // Delete recipe
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this recipe? This action cannot be undone.')) {
+      return;
+    }
+
+    setIsDeleting(true);
+
+    try {
+      const response = await fetch(`http://localhost:3000/recipe/`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipeid: RecipeId,
+        })
+      });
+
+      if (response.ok) {
+        // Redirect to home page or another appropriate page
+        window.location.href = `/`;
+      } else {
+        const data = await response.json();
+        console.error("Error deleting recipe:", data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting recipe:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const deleteRecipe = async() =>{
     try {
@@ -169,18 +200,37 @@ console.log(recipe)
 
 
   const addIngredient = (ingredient) => {
-    if (!newIngredients.some(item => item.name === ingredient.ingredient_name)) {
+    // if (!newIngredients.some(item => item.name === ingredient.ingredient_name)) {
+    //   const newIngredient = {
+    //     name : ingredient.ingredient_name ,
+    //     quantity:'0' ,
+    //     unit: ingredient.unit || ''
+    //   };
+    //   setNewIngredients([...newIngredients, newIngredient]);
+    //   console.log(newIngredients);
+    // } else {
+    //   console.log('Ingredient already added');
+    // }
+
+    const isAlreadyAdded = newIngredients.some(item => item.name === ingredient.ingredient_name) 
+                                || recipe.ingredients?.some(item => item.name === ingredient.ingredient_name);
+    if (!isAlreadyAdded) {
       const newIngredient = {
-        name : ingredient.ingredient_name ,
-        quantity:'0' ,
+        name: ingredient.ingredient_name,
+        quantity: '0',
         unit: ingredient.unit || ''
       };
+  
       setNewIngredients([...newIngredients, newIngredient]);
-      console.log(newIngredients);
+  
+      // Remove the added ingredient from suggested ingredients
+      setSuggestedIngredients(suggestedIngredients.filter(
+        (suggested) => suggested.ingredient_name !== ingredient.ingredient_name
+      ));
     } else {
-      console.log('Ingredient already added');
+      console.log('Ingredient already exists in the recipe or has been added.');
     }
-  };
+  }
 
 
   const removeIngredient = (index) => {
@@ -205,7 +255,13 @@ console.log(recipe)
   
       if (!response.ok) throw new Error('Failed to fetch suggested ingredients');
       const data = await response.json();
-      setSuggestedIngredients(data);
+
+      const filteredIngredients = data.filter(ing =>{  
+          return !newIngredients.some(item => item.name === ing.ingredient_name) 
+                && !recipe.ingredients.some(item => item.name === ing.ingredient_name) 
+        })
+
+      setSuggestedIngredients(filteredIngredients);
     } catch (error) {
       console.error('Error fetching suggested ingredients:', error);
       setSuggestedIngredients([]);
@@ -570,7 +626,7 @@ console.log(recipe)
                 value={newInstruction}
                 onChange={(e) => setNewInstruction(e.target.value)}
                 className="w-full p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl shadow-sm resize-none h-48 sm:h-64 text-sm sm:text-base"
-                placeholder="Instructions..."
+                placeholder={recipe.instructions}
               />
             ) : (
               <ol className="space-y-3 sm:space-y-4">
