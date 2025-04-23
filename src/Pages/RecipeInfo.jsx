@@ -568,7 +568,7 @@
 
 
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import NavBar from "../Components/NavBar";
 import defaultRecipeImage from '../assets/defaultRecipeImage.jpg';
 import { Clock } from 'lucide-react';
@@ -583,12 +583,14 @@ import { RiCloseLargeLine } from "react-icons/ri";
 const RecipeInfo = () => {
   const { RecipeId } = useParams();
   const { user } = useAuthContext();
+  const navigate = useNavigate();
 
   const [recipe, setRecipe] = useState(null);
   const [recipeUser, setRecipeUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // State for edited values
   const [newRecipeTitle, setNewRecipeTitle] = useState('');
@@ -715,6 +717,36 @@ const RecipeInfo = () => {
     setNewRecipeImage(file);
   };
 
+  // Delete recipe
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this recipe? This action cannot be undone.')) {
+      return;
+    }
+
+    setIsDeleting(true);
+
+    try {
+      const response = await fetch(`http://localhost:3000/recipe/`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipeid: RecipeId,
+        })
+      });
+
+      if (response.ok) {
+        // Redirect to home page or another appropriate page
+        window.location.href = '/';
+      } else {
+        const data = await response.json();
+        console.error("Error deleting recipe:", data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting recipe:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   // const deleteRecipe = async() =>{
   //   try {
@@ -842,33 +874,49 @@ const RecipeInfo = () => {
                 <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-wrap">
                   {/* Buttons responsive adjustments */}
                   {isRecipeOwner && !isEditing ? (
-                    <button
-                      className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-full shadow-lg hover:from-purple-600 hover:to-blue-700 transition-all"
-                      onClick={() => setIsEditing(true)}
-                    >
-                      <HiMiniPencilSquare className="mr-1 sm:mr-2 w-4 h-4" />
-                      Edit Recipe
-                    </button>
-                  ) : isRecipeOwner && isEditing ? (
-                    <div className="flex gap-2 sm:gap-3">
+                    <div className="flex items-center">
                       <button
-                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-full shadow-lg"
+                        className="flex items-center px-2 py-2 bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-l-full shadow-lg hover:from-purple-600 hover:to-blue-700 transition-all duration-300 ease-in-out min-w-[80px]"
+                        onClick={() => setIsEditing(true)}
+                      >
+                        <HiMiniPencilSquare className="mr-1" />
+                        &nbsp;Edit
+                      </button>
+                      <button
+                        className="flex items-center px-2 py-2 bg-red-500 text-white rounded-r-full shadow-lg hover:bg-red-600 transition-all duration-300 ease-in-out min-w-[80px]"
+                        onClick={handleDelete}
+                        disabled={isDeleting}
+                      >
+                        {isDeleting ? (
+                          <span className="animate-pulse">Deleting...</span>
+                        ) : (
+                          <>
+                            <RiCloseLargeLine className="mr-1" />
+                            Delete
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  ) : isRecipeOwner && isEditing ? (
+                    <div className="flex items-center">
+                      <button
+                        className="flex items-center px-2 py-2 bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-l-full shadow-lg hover:from-purple-600 hover:to-blue-700 transition-all duration-300 ease-in-out min-w-[80px]"
                         onClick={saveEditedRecipe}
                       >
-                        Save
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Save
                       </button>
                       <button
-                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base bg-gray-500 text-white rounded-full shadow-lg"
+                        className="flex items-center px-2 py-2 bg-gray-500 text-white rounded-r-full shadow-lg hover:bg-gray-600 transition-all duration-300 ease-in-out min-w-[80px]"
                         onClick={cancelEditing}
                       >
-                        Cancel
+                        &nbsp;&nbsp;Cancel
                       </button>
                       <button
-                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base bg-blue-500 text-white rounded-full shadow-lg"
+                        className="ml-4 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base bg-blue-500 text-white rounded-full shadow-lg"
                         onClick={() => fileInputRef.current.click()}
                       >
                         Choose Image
-                      </button>
+                        </button>
                     </div>
                   ) : (
                     <BookmarkButton
