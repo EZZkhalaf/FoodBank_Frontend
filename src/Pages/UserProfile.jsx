@@ -293,6 +293,8 @@ import ProfileRecipeElement from '../Components/profileRecipeElement';
 import { IoMdSettings } from "react-icons/io";
 import Footer from '../Components/Footer';
 import { useNavigate } from 'react-router-dom';
+import NavBar from '../Components/NavBar';
+import ProfileNavBar from '../Components/ProfileNavBar';
 
 const UserProfile = () => {
   const { user, dispatch } = useAuthContext();
@@ -376,7 +378,6 @@ const UserProfile = () => {
       });
 
       const data = await response.json();
-      console.log(data.message);
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating the user data:', error);
@@ -489,6 +490,7 @@ const UserProfile = () => {
   return (
     <div className='flex flex-col min-h-screen bg-sand-50 w-full'>
       <div className='bg-white rounded-xl w-full p-8'>
+        <ProfileNavBar /> 
         {/* Profile Section */}
         <div className='flex flex-col md:flex-row items-center justify-between w-full mt-10'>
           {/* Left Section: Profile Picture and Info */}
