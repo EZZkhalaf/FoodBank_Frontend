@@ -1,5 +1,4 @@
 // import React, { useState, useEffect, useRef } from "react";
-
 // import { Link, useParams, useNavigate } from "react-router-dom";
 // import NavBar from "../Components/NavBar";
 // import defaultRecipeImage from '../assets/defaultRecipeImage.jpg';
@@ -11,7 +10,6 @@
 // import { RiCloseLargeLine } from "react-icons/ri";
 // import { improve } from "@cloudinary/url-gen/actions/adjust";
 // import { ImproveAction } from "@cloudinary/url-gen/actions/adjust/ImproveAction";
-// // import toast from 'react-toastify';
 
 
 // const RecipeInfo = () => {
@@ -104,7 +102,11 @@
  
 //       let formData = new FormData();
 //       formData.append('newRecipe_title', newRecipeTitle);
-//       formData.append('newIngredients', JSON.stringify(newIngredients));
+
+//       formData.append('newIngredients', newIngredients.length > 0 
+//                 ? JSON.stringify(newIngredients)
+//                  : JSON.stringify(recipe.ingredients || []));
+
 //       formData.append('newInstructions', newInstruction);
 //       formData.append('newRecipe_description', newRecipeDescription);
 //       formData.append('newCookingTime', newCookingTime);
@@ -202,17 +204,6 @@
 
 
 //   const addIngredient = (ingredient) => {
-//     // if (!newIngredients.some(item => item.name === ingredient.ingredient_name)) {
-//     //   const newIngredient = {
-//     //     name : ingredient.ingredient_name ,
-//     //     quantity:'0' ,
-//     //     unit: ingredient.unit || ''
-//     //   };
-//     //   setNewIngredients([...newIngredients, newIngredient]);
-//     //   console.log(newIngredients);
-//     // } else {
-//     //   console.log('Ingredient already added');
-//     // }
 
 //     const isAlreadyAdded = newIngredients.some(item => item.name === ingredient.ingredient_name) 
 //                                 || recipe.ingredients?.some(item => item.name === ingredient.ingredient_name);
@@ -270,15 +261,33 @@
 //     }
 //   };
 
+//   // 300ms delay for debounce for fetching the suggested ingredients 
 //   useEffect(() => {
 //     const delayDebounceFn = setTimeout(() => {
 //       fetchSuggestedIngredients(searchQuery);
-//     }, 300); // 300ms delay for debounce
+//     }, 300); 
 //     return () => clearTimeout(delayDebounceFn);
 //   }, [searchQuery]);
 
-//   const improveInstructions = async(){
 
+//   //using the deepseek API
+//   const improveInstructions = async()=>{
+//     const instructionsMessage = newInstruction || recipe.instructions;
+//     const message =  instructionsMessage + 'for the recipe : ' + recipe.recipe_title;
+//       try {
+//         const response = await fetch('http://localhost:3000/apiDeepseek/improveInstructions' , {
+//           method:'post' ,
+//           headers:{'Content-Type' : 'application/json'},
+//           body : JSON.stringify({message : message})
+//         });
+        
+
+//         const data = await response.json();
+//         console.log(data)
+//         setNewInstruction(data);
+//       } catch (error) {
+        
+//       }
 //   }
 
 
@@ -628,12 +637,18 @@
 //                 <h2 className="text-xl sm:text-2xl font-bold border-b-2 border-purple-300 pb-2">
 //                   Step-by-Step Instructions
 //                 </h2>
-//                 <button 
-//                   className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-full shadow-lg hover:scale-105 hover:shadow-xl transform-gpu duration-300"
-//                   onClick={improveInstructions}
-//                 >
-//                   Improve with AI ✨
-//                 </button>
+//                 {isEditing ? (
+//                   <button 
+//                       className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-full shadow-lg hover:scale-105 hover:shadow-xl transform-gpu duration-300"
+//                       onClick={improveInstructions}
+//                     >
+//                       Improve with AI ✨
+//                     </button>
+//                 ):(
+//                   <div></div>
+//                 )
+//               }
+                
 //               </div>
 
 //               {isEditing ? (
@@ -645,7 +660,7 @@
 //                 />
 //               ) : (
 //                 <ol className="space-y-3 sm:space-y-4">
-//                   {recipe.instructions?.split("/ ").map((step, index) =>
+//                   {recipe.instructions?.split(". ").map((step, index) =>
 //                     step ? (
 //                       <li key={index} className="relative pl-5 sm:pl-6 py-2 sm:py-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
 //                         <span className="absolute left-1.5 sm:left-2 top-3.5 sm:top-4 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full" />
@@ -659,17 +674,7 @@
 //         </div>
 //       </div>
   
-//       {/* <style jsx>{`
-//         @keyframes pulse-slow {
-//           0% { transform: scale(1); }
-//           50% { transform: scale(1.05); }
-//           100% { transform: scale(1); }
-//         }
-        
-//         .animate-pulse-slow {
-//           animation: pulse-slow 2s infinite;
-//         }
-//       `}</style> */}
+
 //     </main>
   
 //     <Footer className="bg-white/90 backdrop-blur-md shadow-inner" />
@@ -684,8 +689,8 @@
 
 
 
-import React, { useState, useEffect, useRef } from "react";
 
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import NavBar from "../Components/NavBar";
 import defaultRecipeImage from '../assets/defaultRecipeImage.jpg';
@@ -695,9 +700,8 @@ import BookmarkButton from "../Components/BookMarkButton";
 import Footer from "../Components/Footer";
 import { useAuthContext } from "../Context/AuthContext";
 import { RiCloseLargeLine } from "react-icons/ri";
-import { improve } from "@cloudinary/url-gen/actions/adjust";
+import { CircleLoader } from 'react-spinners';
 import { ImproveAction } from "@cloudinary/url-gen/actions/adjust/ImproveAction";
-// import toast from 'react-toastify';
 
 
 const RecipeInfo = () => {
@@ -723,6 +727,8 @@ const RecipeInfo = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestedIngredients, setSuggestedIngredients] = useState([]);
   const fileInputRef = useRef(null);
+
+  const [isImproving , setIsImproving ] = useState(false)
 
   // Check if recipe is bookmarked
   useEffect(() => {
@@ -790,7 +796,11 @@ const RecipeInfo = () => {
  
       let formData = new FormData();
       formData.append('newRecipe_title', newRecipeTitle);
-      formData.append('newIngredients', JSON.stringify(newIngredients) || JSON.stringify(recipe.ingredients));
+      
+      formData.append('newIngredients', newIngredients.length > 0 
+                ? JSON.stringify(newIngredients)
+                 : JSON.stringify(recipe.ingredients || []));
+
       formData.append('newInstructions', newInstruction);
       formData.append('newRecipe_description', newRecipeDescription);
       formData.append('newCookingTime', newCookingTime);
@@ -953,7 +963,10 @@ const RecipeInfo = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
 
+
+  //using the deepseek API
   const improveInstructions = async()=>{
+    setIsImproving(true);
     const instructionsMessage = newInstruction || recipe.instructions;
     const message =  instructionsMessage + 'for the recipe : ' + recipe.recipe_title;
       try {
@@ -969,6 +982,8 @@ const RecipeInfo = () => {
         setNewInstruction(data);
       } catch (error) {
         
+      }finally{
+        setIsImproving(false);
       }
   }
 
@@ -1324,7 +1339,14 @@ const RecipeInfo = () => {
                       className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-full shadow-lg hover:scale-105 hover:shadow-xl transform-gpu duration-300"
                       onClick={improveInstructions}
                     >
-                      Improve with AI ✨
+                      {isImproving ? (
+                        <div className="flex items-center gap-2">
+                          <CircleLoader color="#ffffff" size={16} /> {/* Loading spinner */}
+                          <span>Improving...</span>
+                        </div>
+                      ):(
+                       'Improve with AI ✨'
+                      )}
                     </button>
                 ):(
                   <div></div>
@@ -1356,17 +1378,7 @@ const RecipeInfo = () => {
         </div>
       </div>
   
-      {/* <style jsx>{`
-        @keyframes pulse-slow {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.05); }
-          100% { transform: scale(1); }
-        }
-        
-        .animate-pulse-slow {
-          animation: pulse-slow 2s infinite;
-        }
-      `}</style> */}
+
     </main>
   
     <Footer className="bg-white/90 backdrop-blur-md shadow-inner" />
