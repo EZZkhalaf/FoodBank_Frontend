@@ -8,6 +8,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 import RecipeElement from '../Components/RecipeElement';
 import FeaturedRecipe from '../Components/FeaturedRecipe';
 import CategorySection from '../Components/CategorySection';  
+import { ThreeDot } from 'react-loading-indicators';
 
 const Home = () => {
   const { user } = useAuthContext();
@@ -16,6 +17,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [featuredRecipe , setFeaturedRecipe] = useState([]);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -26,12 +28,25 @@ const Home = () => {
         setRecipes(data);
         const uniqueTypes = [...new Set(data.map(recipe => recipe.type))];
         setCategories(uniqueTypes);
+
+        //this hook for the most bookmarked recipe fetching 
+        const response2 = await fetch('http://localhost:3000/recipe/mostPopularRecipe/first');
+        if (!response2.ok) {
+          console.error("Error in the response from the backend:", response2.statusText);
+          return;
+        }
+        const data2 = await response2.json();
+        console.log(data2)
+        setFeaturedRecipe(data2);
+
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
+
+    
 
     fetchRecipes();
   }, []);
@@ -46,10 +61,31 @@ const Home = () => {
   };
 
   if (!user) return null;
-  if (loading) return <div className="text-center p-8">Loading recipes...</div>;
-  if (error) return <div className="text-center p-8 text-red-500">Error: {error}</div>;
 
-  const featuredRecipe = recipes[0];
+
+  if (loading)     
+    return (
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="p-6 rounded-lg shadow-md bg-white border border-gray-200">
+        <ThreeDot color={["#32cd32", "#327fcd", "#cd32cd", "#cd8032"]} />
+      </div>
+    </div>
+  );
+  
+if (error) {
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="text-center p-8 text-red-500">
+        Error: {error}
+      </div>
+    </div>
+  );
+}
+
+  //will add the the most bookmarked recipe in it not the first one 
+  const featuredRecipe1 = recipes[0];
+
+
 
   return (
     <div className="flex flex-col min-h-screen">

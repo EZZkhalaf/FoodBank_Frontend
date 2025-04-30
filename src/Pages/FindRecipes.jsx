@@ -253,6 +253,7 @@ import NavBar from '../Components/NavBar';
 import RecipeElement from '../Components/RecipeElement';
 import { ServerOff } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
+import { ThreeDot } from 'react-loading-indicators';
 
 const API_ENDPOINTS = {
   RECIPES: 'http://localhost:3000/recipe/getRecipesPerPage',
@@ -331,9 +332,24 @@ const FindRecipes = () => {
     ))
   );
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
+  if (loading)     
+    return (
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="p-6 rounded-lg shadow-md bg-white border border-gray-200">
+        <ThreeDot color={["#32cd32", "#327fcd", "#cd32cd", "#cd8032"]} />
+      </div>
+    </div>
+  );
+  
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-center p-8 text-red-500">
+          Error: {error}
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="bg-gray-50 min-h-screen">
       <NavBar />

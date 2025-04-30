@@ -7,6 +7,7 @@ import Footer from '../Components/Footer';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../Components/NavBar';
 import ProfileNavBar from '../Components/ProfileNavBar';
+import { ThreeDot } from 'react-loading-indicators';
 
 const UserProfile = () => {
   const { user, dispatch } = useAuthContext();
@@ -197,7 +198,14 @@ const UserProfile = () => {
     );
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)     
+    return (
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="p-6 rounded-lg shadow-md bg-white border border-gray-200">
+        <ThreeDot color={["#32cd32", "#327fcd", "#cd32cd", "#cd8032"]} />
+      </div>
+    </div>
+  );
 
   return (
     <div className='flex flex-col min-h-screen bg-sand-50 w-full'>

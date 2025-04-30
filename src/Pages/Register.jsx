@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
 import { useNavigate } from 'react-router-dom';
+import { ThreeDot } from 'react-loading-indicators';
 
 const Register = ({loadUser}) => {
     const [loading , setLoading] = useState(false);
@@ -45,7 +46,14 @@ const Register = ({loadUser}) => {
 
     }
 
-
+    if (loading)     
+      return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="p-6 rounded-lg shadow-md bg-white border border-gray-200">
+          <ThreeDot color={["#32cd32", "#327fcd", "#cd32cd", "#cd8032"]} />
+        </div>
+      </div>
+    );
 
   return (
     <div className="flex items-center justify-center min-h-screen">

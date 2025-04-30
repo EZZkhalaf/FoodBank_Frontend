@@ -420,6 +420,7 @@ import { useAuthContext } from '../Context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../Components/NavBar';
 import Footer from '../Components/Footer';
+import { ThreeDot } from 'react-loading-indicators';
 
 const AddRecipe = () => {
   const [formData, setFormData] = useState({
@@ -611,6 +612,16 @@ const AddRecipe = () => {
       setLoading(false);
     }
   };
+
+  if (loading)     
+    return (
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="p-6 rounded-lg shadow-md bg-white border border-gray-200">
+        <ThreeDot color={["#32cd32", "#327fcd", "#cd32cd", "#cd8032"]} />
+      </div>
+    </div>
+  );
+  
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100">

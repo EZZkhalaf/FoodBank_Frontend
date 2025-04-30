@@ -5,6 +5,8 @@ import defaultPhoto from "../assets/defaultPhoto.png";
 import profileRecipeElement from "../Components/profileRecipeElement";
 import { useAuthContext } from "../Context/AuthContext";
 import RecipeElement from "../Components/RecipeElement";
+import { ThreeDot } from 'react-loading-indicators';
+
 
 const UserPage = () => {
   const { user } = useAuthContext();
@@ -87,7 +89,6 @@ const UserPage = () => {
       console.log('error in adding the user' , error)
     }
   }
-  console.log(recipes)
   // Fetch user recipes
   useEffect(() => {
     if (!userPageOwner?._id) return; // Ensure userPageOwner._id is available
@@ -113,8 +114,54 @@ const UserPage = () => {
     fetchUserRecipes();
   }, [userPageOwner?._id]); // Add userPageOwner._id as a dependency
 
-  if (loading) return <div>Loading...</div>;
-  if (!userPageOwner) return <div>User not found</div>;
+    if (loading)     
+      return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="p-6 rounded-lg shadow-md bg-white border border-gray-200">
+          <ThreeDot color={["#32cd32", "#327fcd", "#cd32cd", "#cd8032"]} />
+        </div>
+      </div>
+    );
+ 
+    
+
+    if (!userPageOwner) {
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+          <div className="p-6 rounded-lg shadow-lg bg-white max-w-md w-full">
+            <div className="text-center">
+              <svg
+                className="w-12 h-12 mx-auto text-blue-500 mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                User not found
+              </h2>
+              <p className="text-gray-600 mb-4">
+                The user you are looking for does not exist or has been deleted.
+              </p>
+              <button 
+                onClick={navigate('/')}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                >
+                
+                Go back home
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
 
   return (
     <div className="w-full mx-5 xl:mx-auto max-w-6xl p-6">
