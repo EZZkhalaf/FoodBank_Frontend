@@ -981,7 +981,7 @@ const RecipeInfo = () => {
         console.log(data)
         setNewInstruction(data);
       } catch (error) {
-        
+          console.log(error)
       }finally{
         setIsImproving(false);
       }
@@ -1009,7 +1009,7 @@ const RecipeInfo = () => {
                   className="hidden"
                 />
                 <img
-                  src={recipe.recipe_image || newRecipeImage}
+                  src={ newRecipeImage || recipe.recipe_image }
                   alt={recipe.recipe_title || "Default Recipe Image"}
                   className="w-full h-48 xs:h-64 sm:h-80 md:h-96 object-cover rounded-lg shadow-md"
                   onClick={() => fileInputRef.current.click()}

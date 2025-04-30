@@ -252,7 +252,7 @@ const UserProfile = () => {
                 </div>
                 {/* Submit Button */}
                 <button
-                  className="bg-green-500 text-white font-semibold px-4 py-2 
+                  className="bg-blue-500 text-white font-semibold px-4 py-2 
                   rounded-md m-3 hover:bg-green-600 transition-all"
                   onClick={editUser}
                 >

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import IngredientElement from './ingredientElement';
 
-const IngredientSelection = ({ selectedItems, setSelectedItems }) => {
+const IngredientSelection = ({ selectedItems, setSelectedItems  , componentTitle}) => {
   const [ingredientsBucket, setIngredientsBucket] = useState([]);
   const [showAll, setShowAll] = useState(false);
   const [query, setQuery] = useState('');
@@ -74,7 +74,7 @@ const IngredientSelection = ({ selectedItems, setSelectedItems }) => {
   return (
     <div className="w-full h-1/2 min-h-[50vh] px-4 flex flex-col">
       <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 h-full flex flex-col">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">Filter by Ingredients</h3>
+        <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">{componentTitle}</h3>
 
         {/* Search Input */}
         <div className="relative w-full mb-4">

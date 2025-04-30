@@ -274,6 +274,7 @@ const FindRecipes = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchParams] = useSearchParams();
+  const componentTitle = 'filter by ingredients : '
 
   useEffect(() => {
     const initialCategory = searchParams.get('category');
@@ -363,6 +364,7 @@ const FindRecipes = () => {
             <IngredientSelection
               selectedItems={selectedItems}
               setSelectedItems={setSelectedItems}
+              componentTitle={componentTitle}
             />
           </div>
         )}
