@@ -205,7 +205,9 @@
 //   );
 // };
 
-// export default FindRecipes;import React, { useState, useEffect, useCallback } from 'react';
+// export default FindRecipes;
+
+
 
 import React, { useState, useEffect, useCallback } from 'react';
 import IngredientSelection from '../Components/IngredientSelection';
@@ -215,6 +217,7 @@ import RecipeElement from '../Components/RecipeElement';
 import { ServerOff } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { ThreeDot } from 'react-loading-indicators';
+import { motion } from 'framer-motion';
 
 const API_ENDPOINT = 'http://localhost:3000/recipe/getRecipesPerPage';
 const RECIPES_PER_PAGE = 12;
@@ -287,16 +290,23 @@ const FindRecipes = () => {
   const renderRecipes = () => (
     recipes.length > 0 ? (
       recipes.map((recipe) => (
-        <RecipeElement
+        <motion.div
           key={recipe._id}
-          RecipeId={recipe._id}
-          recipe_image={recipe.recipe_image}
-          recipe_name={recipe.recipe_title}
-          recipe_description={recipe.recipe_description}
-          recipeType={recipe.type}
-          cookingTime={recipe.cookingTime}
-          difficulty={recipe.difficullty}
-        />
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="transform transition-transform duration-300 hover:-translate-y-2 hover:scale-105"
+        >
+          <RecipeElement
+            RecipeId={recipe._id}
+            recipe_image={recipe.recipe_image}
+            recipe_name={recipe.recipe_title}
+            recipe_description={recipe.recipe_description}
+            recipeType={recipe.type}
+            cookingTime={recipe.cookingTime}
+            difficulty={recipe.difficulty}
+          />
+        </motion.div>
       ))
     ) : (
       <div className="text-center text-gray-500 col-span-full">
