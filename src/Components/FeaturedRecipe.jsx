@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, Utensils, ArrowRight } from 'lucide-react';
+import defaultRecipeImage from "../assets/defaultRecipeImage.jpg"
 
 const FeaturedRecipe = ({ recipe }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
-  console.log(recipe);
 
+  const [displayImage , setDisplayedImage] = useState(null);
+  useEffect(() =>{
+    if(recipe.recipe_image){
+      const imageBase64 =  /^data:image\/(png|jpe?g|gif|webp);base64,/.test(recipe.recipe_image);
+      if(imageBase64) setDisplayedImage(recipe.recipe_image);
+        else setDisplayedImage(defaultRecipeImage);
+    } else setDisplayedImage(defaultRecipeImage);
+
+
+
+  } , [recipe.recipe_image])
   return (
     <Link
       to={`/recipe/${recipe._id}`}
@@ -14,7 +25,7 @@ const FeaturedRecipe = ({ recipe }) => {
       <div className="relative h-full">
         <div className={`absolute inset-0 bg-sand-100 ${!imageLoaded ? 'animate-pulse' : ''}`} />
         <img
-          src={recipe.recipe_image}
+          src={displayImage}
           alt={recipe.recipe_title}
           className={`h-full w-full object-cover transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setImageLoaded(true)}

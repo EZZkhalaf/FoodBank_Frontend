@@ -5,6 +5,9 @@ import ProfileRecipeElement from '../Components/profileRecipeElement';
 import { IoMdSettings } from "react-icons/io";
 import Footer from '../Components/Footer';
 import { useNavigate } from 'react-router-dom';
+import NavBar from '../Components/NavBar';
+import ProfileNavBar from '../Components/ProfileNavBar';
+import { ThreeDot } from 'react-loading-indicators';
 
 const UserProfile = () => {
   const { user, dispatch } = useAuthContext();
@@ -23,14 +26,24 @@ const UserProfile = () => {
 
   const [profileUsername, setProfileUsername] = useState(username || "");
   const [profileBio, setProfileBio] = useState(bio || "");
-  const [currentProfilePicture, setCurrentProfilePicture] = useState(profilePic || defaultPhoto);
   const [previewImage, setPreviewImage] = useState(profilePic || defaultPhoto);
   
   const fileInputRef = useRef(null);
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const recipesPerPage = 9;
+  const indexOfLastRecipe = currentPage * recipesPerPage;
+  const indexOfFirstRecipe = indexOfLastRecipe - recipesPerPage;
+  const currentRecipes = recipes.slice(indexOfFirstRecipe, indexOfLastRecipe);
+  const totalPages = Math.ceil(recipes.length / recipesPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const next_page = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
+  const previousPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
+
   // Helper function to determine which image to display
   const getProfileImage = () => {
-    // Check if profilePic exists and is valid
     if (profilePic && profilePic !== "/assets/defaultPhoto.png") {
       return profilePic;
     }
@@ -78,7 +91,6 @@ const UserProfile = () => {
       });
 
       const data = await response.json();
-      console.log(data.message);
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating the user data:', error);
@@ -113,11 +125,92 @@ const UserProfile = () => {
     reader.readAsDataURL(file);
   };
 
-  if (loading) return <div>Loading...</div>;
+  // Pagination component
+  const Pagination = () => {
+    if (totalPages <= 1) return null;
+
+    const maxDisplayedPages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxDisplayedPages / 2));
+    let endPage = startPage + maxDisplayedPages - 1;
+
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(1, endPage - maxDisplayedPages + 1);
+    }
+
+    const pageNumbers = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+
+    return (
+      <div className="flex justify-center items-center mt-8 space-x-2">
+        <button 
+          onClick={previousPage} 
+          disabled={currentPage === 1}
+          className={`p-2 rounded-md ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-indigo-600 hover:bg-indigo-100'}`}
+        >
+          Previous
+        </button>
+        
+        {startPage > 1 && (
+          <>
+            <button 
+              onClick={() => paginate(1)} 
+              className={`px-3 py-1 rounded-md ${currentPage === 1 ? 'bg-indigo-600 text-white' : 'text-indigo-600 hover:bg-indigo-100'}`}
+            >
+              1
+            </button>
+            {startPage > 2 && <span className="px-2">...</span>}
+          </>
+        )}
+        
+        {pageNumbers.map(number => (
+          <button
+            key={number}
+            onClick={() => paginate(number)}
+            className={`px-3 py-1 rounded-md ${currentPage === number ? 'bg-indigo-600 text-white' : 'text-indigo-600 hover:bg-indigo-100'}`}
+          >
+            {number}
+          </button>
+        ))}
+        
+        {endPage < totalPages && (
+          <>
+            {endPage < totalPages - 1 && <span className="px-2">...</span>}
+            <button 
+              onClick={() => paginate(totalPages)} 
+              className={`px-3 py-1 rounded-md ${currentPage === totalPages ? 'bg-indigo-600 text-white' : 'text-indigo-600 hover:bg-indigo-100'}`}
+            >
+              {totalPages}
+            </button>
+          </>
+        )}
+        
+        <button 
+          onClick={next_page} 
+          disabled={currentPage === totalPages}
+          className={`p-2 rounded-md ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-indigo-600 hover:bg-indigo-100'}`}
+        >
+          Next
+        </button>
+      </div>
+    );
+  };
+
+  if (loading)     
+    return (
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="p-6 rounded-lg shadow-md bg-white border border-gray-200">
+        <ThreeDot color={["#32cd32", "#327fcd", "#cd32cd", "#cd8032"]} />
+      </div>
+    </div>
+  );
 
   return (
     <div className='flex flex-col min-h-screen bg-sand-50 w-full'>
       <div className='bg-white rounded-xl w-full p-8'>
+        <ProfileNavBar /> 
         {/* Profile Section */}
         <div className='flex flex-col md:flex-row items-center justify-between w-full mt-10'>
           {/* Left Section: Profile Picture and Info */}
@@ -167,7 +260,7 @@ const UserProfile = () => {
                 </div>
                 {/* Submit Button */}
                 <button
-                  className="bg-green-500 text-white font-semibold px-4 py-2 
+                  className="bg-blue-500 text-white font-semibold px-4 py-2 
                   rounded-md m-3 hover:bg-green-600 transition-all"
                   onClick={editUser}
                 >
@@ -192,7 +285,7 @@ const UserProfile = () => {
             )}
           </div>
           {/* Right Section: Settings Button */}
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center">
             <button
               onClick={() => setIsEditing(!isEditing)}
               className="p-3 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 focus:outline-none"
@@ -239,8 +332,8 @@ const UserProfile = () => {
           <div className='mb-8'>
             <h3 className='text-xl font-semibold text-gray-700 mb-4'>My Recipes</h3>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-              {recipes.length > 0 ? (
-                recipes.map((recipe) => (
+              {currentRecipes.length > 0 ? (
+                currentRecipes.map((recipe) => (
                   <ProfileRecipeElement
                     key={recipe._id}
                     RecipeId={recipe._id}
@@ -256,6 +349,15 @@ const UserProfile = () => {
                 <p className='text-gray-600'>No recipes created yet.</p>
               )}
             </div>
+
+            {/* Pagination */}
+            <Pagination />
+
+            {/* Results count */}
+            <div className="text-center mt-4 text-gray-600">
+              Showing {indexOfFirstRecipe + 1}-
+              {Math.min(indexOfLastRecipe, recipes.length)} of {recipes.length} recipes
+            </div>
           </div>
         </div>
       </div>
@@ -265,8 +367,3 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
-
-
-
-
-

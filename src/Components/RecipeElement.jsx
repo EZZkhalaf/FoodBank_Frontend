@@ -1,19 +1,35 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CiBookmarkPlus } from "react-icons/ci";
 import { useAuthContext } from '../Context/AuthContext';
 import { IoMdBookmark } from "react-icons/io";
 import { Clock, Utensils } from 'lucide-react';
-import defaultRecipeImage from '../assets/defaultRecipeImage.jpg'
+import defaultRecipeImage from '../assets/defaultRecipeImage.jpg';
 
-const RecipeElement = ({ RecipeId, recipe_image, recipe_name, recipe_description , recipeType ,cookingTime , difficulty}) => {
+const RecipeElement = ({ RecipeId, recipe_image, recipe_name, recipe_description, recipeType, cookingTime, difficulty }) => {
+
+
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [displayedImage, setDisplayedImage] = useState(recipe_image || defaultRecipeImage);
   const { user } = useAuthContext();
 
   useEffect(() => {
-    
+    if (recipe_image) {
+      const isBase64 = /^data:image\/(png|jpe?g|gif|webp);base64,/.test(recipe_image);
+      if (!isBase64) {
+        setDisplayedImage(defaultRecipeImage);
+      } else {
+        setDisplayedImage(recipe_image);
+      }
+    } else {
+      setDisplayedImage(defaultRecipeImage);
+    }
+  }, [recipe_image]);
+
+  useEffect(() => {
     const checkSavedStatus = async () => {
       try {
         const response = await fetch('http://localhost:3000/user/checkSave', {
@@ -86,6 +102,7 @@ const RecipeElement = ({ RecipeId, recipe_image, recipe_name, recipe_description
       setLoading(false);
     }
   };
+
   return (
     <Link
       to={`/recipe/${RecipeId}`}
@@ -99,15 +116,15 @@ const RecipeElement = ({ RecipeId, recipe_image, recipe_name, recipe_description
             className={`w-full h-full object-cover transition-opacity duration-300 ${
               imageLoaded ? 'opacity-100' : 'opacity-0'
             }`}
-            src={recipe_image}
-            alt={recipe_name ||  "Default Recipe Image"}
+            src={displayedImage}
+            alt={recipe_name || "Default Recipe Image"}
             onLoad={() => setImageLoaded(true)}
             onError={(e) => {
               e.target.src = defaultRecipeImage;
               e.target.alt = "Default Recipe Image";
+              setDisplayedImage(defaultRecipeImage);
             }}
           />
-                
           
           {/* Bookmark Button */}
           <div className="absolute top-3 right-3">
@@ -127,8 +144,6 @@ const RecipeElement = ({ RecipeId, recipe_image, recipe_name, recipe_description
               )}
             </button>
           </div>
-
-
         </div>
         {recipeType && (
           <div className="absolute top-3 left-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-md">
@@ -154,9 +169,7 @@ const RecipeElement = ({ RecipeId, recipe_image, recipe_name, recipe_description
               <span>{difficulty}</span>
             </div>
           </div>
-          
         </div>
-
       </div>
     </Link>
   );
