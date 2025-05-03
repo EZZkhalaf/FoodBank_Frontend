@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CiBookmarkPlus } from "react-icons/ci";
@@ -10,6 +8,8 @@ import { Clock, Utensils } from 'lucide-react';
 import defaultRecipeImage from '../assets/defaultRecipeImage.jpg';
 
 const RecipeElement = ({ RecipeId, recipe_image, recipe_name, recipe_description, recipeType, cookingTime, difficulty }) => {
+
+
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -130,10 +130,10 @@ const RecipeElement = ({ RecipeId, recipe_image, recipe_name, recipe_description
           <div className="absolute top-3 right-3">
             <button
               onClick={saved ? handleUnBookmark : handleBookmark}
-              className={`p-2 rounded-full backdrop-blur-sm transition-colors ${
+              className={`p-2 rounded-full backdrop-blur-sm transition-colors cursor-pointer ${
                 saved 
                   ? 'bg-green-100/90 text-green-600 hover:bg-green-200/90'
-                  : 'bg-white/90 text-sand-600 hover:bg-sand-200/90'
+                  : 'bg-white/90 text-sand-600 hover:bg-gray-300/90'
               } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
               disabled={loading}
             >

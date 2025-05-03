@@ -10,6 +10,7 @@ import FeaturedRecipe from '../Components/FeaturedRecipe';
 import CategorySection from '../Components/CategorySection';  
 import { ThreeDot } from 'react-loading-indicators';
 
+
 const Home = () => {
   const { user } = useAuthContext();
   const navigate = useNavigate();
@@ -17,7 +18,9 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
+
   const [featuredRecipe , setFeaturedRecipe] = useState([]);
+
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -63,6 +66,7 @@ const Home = () => {
   if (!user) return null;
 
 
+
   if (loading)     
     return (
     <div className="flex items-center justify-center min-h-screen bg-white">
@@ -88,6 +92,7 @@ if (error) {
 
 
   return (
+
     <div className="flex flex-col min-h-screen">
       <NavBar />
 
@@ -95,7 +100,7 @@ if (error) {
         {/* Hero Section */}
         <section className="relative h-[70vh] min-h-[600px] flex items-center justify-center bg-sand-50">
           <div className="absolute inset-0 overflow-hidden">
-            <img 
+            <img
               src="https://images.unsplash.com/photo-1499028344343-cd173ffc68a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
               alt="Delicious food"
               className="w-full h-full object-cover opacity-70"
@@ -109,8 +114,8 @@ if (error) {
             <p className="text-xl md:text-2xl text-sand-700 mb-8 max-w-2xl mx-auto">
               Discover recipes that bring joy to your table, focusing on quality ingredients and straightforward techniques.
             </p>
-            <Link 
-              to="/findRecipes" 
+            <Link
+              to="/findRecipes"
               className="inline-block px-8 py-3 bg-spice-500 text-white rounded-lg text-base font-medium hover:bg-spice-600 transition-colors"
             >
               Explore Recipes
@@ -128,6 +133,7 @@ if (error) {
         {/* Category Sections */}
         {categories.slice(0, 3).map(category => { // Limit to 4 categories
           const categoryRecipes = getRecipesByCategory(category);
+
             return (
               <CategorySection
                 key={category}
@@ -136,6 +142,7 @@ if (error) {
               />
             );
           })}
+
 
       </main>
 
