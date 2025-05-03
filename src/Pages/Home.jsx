@@ -82,11 +82,6 @@ if (error) {
   );
 }
 
-  //will add the the most bookmarked recipe in it not the first one 
-  const featuredRecipe1 = recipes[0];
-
-
-
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
