@@ -5,6 +5,7 @@ import defaultRecipeImage from "../assets/defaultRecipeImage.jpg"
 
 const FeaturedRecipe = ({ recipe }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+
   const [displayImage , setDisplayedImage] = useState(null);
   useEffect(() =>{
     if(recipe.recipe_image){
@@ -12,6 +13,7 @@ const FeaturedRecipe = ({ recipe }) => {
       if(imageBase64) setDisplayedImage(recipe.recipe_image);
         else setDisplayedImage(defaultRecipeImage);
     } else setDisplayedImage(defaultRecipeImage);
+
 
 
   } , [recipe.recipe_image])

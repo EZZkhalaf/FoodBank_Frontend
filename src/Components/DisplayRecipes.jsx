@@ -21,12 +21,13 @@ const DisplayRecipes = () => {
 
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 gap-y-5'>
-      {recipes.map((recipe) => (
+      {recipes.slice(0, 9).map((recipe) => (
         <RecipeElement 
         RecipeId={recipe._id}
         recipe_image={recipe.recipe_image}
         recipe_name={recipe.recipe_title}
-        recipe_description={recipe.recipe_description} // Add this line
+        recipe_description={recipe.recipe_description}
+        cookingTime={recipe.cookingTime} // Add this line
       />
       ))}
     </div>

@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 
 const CategorySection = ({ category, recipes }) => {
   if (recipes.length === 0) return null;
-  
+
   // const scrollAnimation = useScrollAnimation();
 
   return (
@@ -23,8 +23,10 @@ const CategorySection = ({ category, recipes }) => {
 
       <div className="flex justify-between items-center mb-8 mt-5">
         <h2 className="font-serif text-3xl font-medium">{category}</h2>
+
         <Link 
           to={`/findRecipes?category=${encodeURIComponent(category)}`} 
+
           className="text-spice-500 font-medium flex items-center hover:text-spice-600 transition-colors"
         >
           View all
@@ -34,13 +36,17 @@ const CategorySection = ({ category, recipes }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {recipes.slice(0, 4).map(recipe => ( // Show only 4 recipes
+
           <RecipeElement 
+
             key={recipe._id}
             RecipeId={recipe._id}
             recipe_image={recipe.recipe_image}
             recipe_name={recipe.recipe_title}
             recipe_description={recipe.recipe_description}
-            recipeType={recipe.type} 
+
+            recipeType={recipe.type}
+
             cookingTime={recipe.cookingTime}
             difficulty={recipe.difficulty}
           />
@@ -49,5 +55,6 @@ const CategorySection = ({ category, recipes }) => {
     </motion.section>
   );
 }
+
 
 export default CategorySection;
