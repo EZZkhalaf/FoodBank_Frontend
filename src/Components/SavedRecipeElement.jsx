@@ -175,39 +175,39 @@ const SavedRecipeElement = ({ RecipeId, recipe_image, recipe_name, removeRecipe 
   };
 
   return (
-    <div>
-      <Link
-        to={`/recipe/${RecipeId}`}
-        className="block transform transition-all hover:scale-105"
-      >
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-shadow duration-300">
-          {/* Recipe Image */}
-          <img
-            className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105"
-            src={displayImage}
-            alt={recipe_name}
-          />
-
-          {/* Recipe Name & Bookmark */}
-          <div className="p-4 flex justify-between items-center">
-            <p className="text-lg font-semibold text-gray-800 text-center">{recipe_name}</p>
-
-            {/* Conditional Rendering for Bookmark Icon */}
-            {saved ? (
-              <IoMdBookmark
-                onClick={handleUnBookmark}
-                className="text-3xl text-green-600 hover:text-green-800 transition-colors duration-300 cursor-pointer"
-              />
-            ) : (
-              <IoMdBookmark
-                onClick={handleUnBookmark}
-                className="text-3xl text-gray-400 hover:text-gray-600 transition-colors duration-300 cursor-pointer"
-              />
-            )}
-          </div>
+    <div className="h-full">
+    <Link
+      to={`/recipe/${RecipeId}`}
+      className="block h-full transform transition-all hover:scale-105"
+    >
+      <div className="bg-white h-full flex flex-col justify-between shadow-lg rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+        {/* Recipe Image */}
+        <img
+          className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
+          src={displayImage}
+          alt={recipe_name}
+        />
+  
+        {/* Recipe Name & Bookmark */}
+        <div className="p-4 flex justify-between items-center">
+          <p className="text-lg font-semibold text-gray-800 text-center">{recipe_name}</p>
+  
+          {saved ? (
+            <IoMdBookmark
+              onClick={handleUnBookmark}
+              className="text-3xl text-green-600 hover:text-green-800 transition-colors duration-300 cursor-pointer"
+            />
+          ) : (
+            <IoMdBookmark
+              onClick={handleUnBookmark}
+              className="text-3xl text-gray-400 hover:text-gray-600 transition-colors duration-300 cursor-pointer"
+            />
+          )}
         </div>
-      </Link>
-    </div>
+      </div>
+    </Link>
+  </div>
+  
   );
 };
 
