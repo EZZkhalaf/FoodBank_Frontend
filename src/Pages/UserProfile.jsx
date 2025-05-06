@@ -18,14 +18,14 @@
 
 
 
-//   const [showModal , setShowModal] = useState(false);
-//   const [modalUsers , setModalUsers] = useState([]);
-//   const [modalTitle , setModalTitle] = useState("");
-//   //for testing the design of the modal 
-//   const sampleUsers = [
-//     { _id: "1", name: "Alice", profilePic: "https://i.pravatar.cc/100?img=1" },
-//     { _id: "2", name: "Bob", profilePic: "https://i.pravatar.cc/100?img=2" },
-//   ];
+  // const [showModal , setShowModal] = useState(false);
+  // const [modalUsers , setModalUsers] = useState([]);
+  // const [modalTitle , setModalTitle] = useState("");
+  // //for testing the design of the modal 
+  // const sampleUsers = [
+  //   { _id: "1", name: "Alice", profilePic: "https://i.pravatar.cc/100?img=1" },
+  //   { _id: "2", name: "Bob", profilePic: "https://i.pravatar.cc/100?img=2" },
+  // ];
 
 
 //   const navigate = useNavigate();
@@ -57,17 +57,17 @@
 //   const previousPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
 
 
-//   const handleShowFollowers = () => {
-//     setModalUsers(user.followers || []);
-//     setModalTitle("Followers");
-//     setShowModal(true);
-//   };
+  // const handleShowFollowers = () => {
+  //   setModalUsers(user.followers || []);
+  //   setModalTitle("Followers");
+  //   setShowModal(true);
+  // };
   
-//   const handleShowFollowing = () => {
-//     setModalUsers(user.following || []);
-//     setModalTitle("Following");
-//     setShowModal(true);
-//   };
+  // const handleShowFollowing = () => {
+  //   setModalUsers(user.following || []);
+  //   setModalTitle("Following");
+  //   setShowModal(true);
+  // };
 
 //   console.log(user)
 
@@ -387,13 +387,13 @@
 //           </div>
 //         </div>
 
-//         {showModal && (
-//           <UserFollowModal
-//             users={modalUsers}
-//             title={modalTitle}
-//             onClose={() => setShowModal(false)}
-//           />
-//         )}
+        // {showModal && (
+        //   <UserFollowModal
+        //     users={modalUsers}
+        //     title={modalTitle}
+        //     onClose={() => setShowModal(false)}
+        //   />
+        // )}
 
 
 //         {/* Divider */}
@@ -464,6 +464,7 @@ import { useNavigate } from 'react-router-dom';
 import NavBar from '../Components/NavBar';
 import ProfileNavBar from '../Components/ProfileNavBar';
 import { ThreeDot } from 'react-loading-indicators';
+import UserFollowModal from '../Components/UserFollowModal';
 
 const UserProfile = () => {
   const { user, dispatch } = useAuthContext();
@@ -497,6 +498,32 @@ const UserProfile = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const next_page = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
   const previousPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
+
+  //for displaying the followers and following in a modal 
+  const [showModal , setShowModal] = useState(false);
+  const [modalUsers , setModalUsers] = useState([]);
+  const [modalTitle , setModalTitle] = useState("");
+  //for testing the design of the modal 
+  const sampleUsers = [
+    { _id: "1", name: "Alice", profilePic: "https://i.pravatar.cc/100?img=1" },
+    { _id: "2", name: "Bob", profilePic: "https://i.pravatar.cc/100?img=2" },
+  ];
+
+
+  const handleShowFollowers = () => {
+    setModalUsers(user.followers || []);
+    setModalTitle("Followers");
+    setShowModal(true);
+  };
+  
+  const handleShowFollowing = () => {
+    setModalUsers(user.following || []);
+    setModalTitle("Following");
+    setShowModal(true);
+  };
+
+
+
 
   // Helper function to determine which image to display
   const getProfileImage = () => {
@@ -764,20 +791,31 @@ useEffect(() => {
 
         {/* Social Stats */}
         <div className='grid grid-cols-3 gap-4 mt-8 text-center'>
-          <div className='p-4 bg-gray-50 rounded-lg'>
-            <p className='text-xl font-bold text-gray-800'>{followers?.length || 0}</p>
-            <p className='text-gray-600'>Followers</p>
-          </div>
-          <div className='p-4 bg-gray-50 rounded-lg'>
-            <p className='text-xl font-bold text-gray-800'>{following?.length || 0}</p>
-            <p className='text-gray-600'>Following</p>
-          </div>
-          <div className='p-4 bg-gray-50 rounded-lg'>
-            <p className='text-xl font-bold text-gray-800'>{recipes?.length || 0}</p>
-            <p className='text-gray-600'>Recipes</p>
-          </div>
+            <div 
+              onClick={handleShowFollowers}
+              className='p-4 bg-gray-50 rounded-lg'>
+                <p className='text-xl font-bold text-gray-800'>{followers?.length || 0}</p>
+                <p className='text-gray-600'>Followers</p>
+            </div>
+            <div 
+            onClick={handleShowFollowing}
+              className='p-4 bg-gray-50 rounded-lg'>
+              <p className='text-xl font-bold text-gray-800'>{following?.length || 0}</p>
+              <p className='text-gray-600'>Following</p>
+            </div>
+            <div className='p-4 bg-gray-50 rounded-lg'>
+              <p className='text-xl font-bold text-gray-800'>{recipes?.length || 0}</p>
+              <p className='text-gray-600'>Recipes</p>
+            </div>
         </div>
 
+        {showModal && (
+          <UserFollowModal
+            users={modalUsers}
+            title={modalTitle}
+            onClose={() => setShowModal(false)}
+          />
+        )}
         {/* Divider */}
         <div className='flex justify-center items-center mt-10'>
           <div className="w-[40vw] border-t-2 border-sand-200"></div>
