@@ -10,6 +10,7 @@ import FeaturedRecipe from '../Components/FeaturedRecipe';
 import CategorySection from '../Components/CategorySection';  
 import { ThreeDot } from 'react-loading-indicators';
 import './HomeAnimation.css'
+import UserHomeFeed from '../Components/UserHomeFeed';
 
 const Home = () => {
   const { user } = useAuthContext();
@@ -151,6 +152,10 @@ if (error) {
           <div className="animate-scroll">
             <FeaturedRecipe recipe={featuredRecipe} />
           </div>
+        </section>
+
+        <section className="page-container mt-5">
+          <UserHomeFeed />
         </section>
 
         {/* Category Sections */}
