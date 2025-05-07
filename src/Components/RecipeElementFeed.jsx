@@ -15,7 +15,8 @@ const RecipeElementFeed = ({
   recipeType,
   cookingTime,
   difficulty,
-  recipe_user
+  recipe_user,
+  bookmarks
 }) => {
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -122,57 +123,51 @@ const RecipeElementFeed = ({
   };
 
   
-  return (   <Link
-    to={`/recipe/${RecipeId}`}
-    className="block rounded-xl overflow-hidden shadow-sm group hover:shadow-lg transition-shadow duration-700 transform hover:scale-101 bg-white"
-  >
-    <div className="bg-white border border-gray-200 rounded-xl shadow-md overflow-hidden">
-      {/* Header: avatar and username */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-100">
-        <div className="flex items-center">
-          <img
-            src={recipeOwner?.avatar || defaultRecipeImage}
-            alt={`${recipeOwner?.username || 'User'} avatar`}
-            className="w-10 h-10 rounded-full object-cover"
-          />
-          <span className="ml-3 font-semibold text-gray-900">
-            {recipeOwner?.username || 'Unknown'}
-          </span>
-        </div>
-        {/* Optional time display */}
-        {/* <span className="text-sm text-gray-500">{someTimeAgoLogic}</span> */}
-      </div>
-  
-      {/* Recipe image */}
-      <div className="relative">
-        <img
-          src={displayedImage}
-          alt={recipe_name}
-          className="w-full h-64 object-cover transition-opacity duration-700 ease-in-out"
-        />
-      </div>
-  
-      {/* Recipe content */}
-      <div className="p-4">
-        <div className="flex items-center justify-between">
+
+
+  return (
+    <Link
+      to={`/recipe/${RecipeId}`}
+      className="block rounded-2xl overflow-hidden shadow group hover:shadow-xl transition-all duration-500 transform hover:scale-101 bg-white"
+    >
+      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+        
+        {/* Header: Avatar + Username */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <div className="flex items-center">
+            <img
+              src={recipeOwner?.avatar || defaultRecipeImage}
+              alt={`${recipeOwner?.username || 'User'} avatar`}
+              className="w-10 h-10 rounded-full object-cover shadow-sm"
+            />
+            <span className="ml-3 font-medium text-gray-800 text-base">
+              {recipeOwner?.username || 'Unknown'}
+            </span>
+          </div>
+          {/* Optional time */}
+          {/* <span className="text-sm text-gray-500">{someTimeAgoLogic}</span> */}
+        </div>
+  
+        {/* Recipe image */}
+        <div className="relative">
+          <img
+            src={displayedImage}
+            alt={recipe_name}
+            className="w-full h-60 object-cover transition-opacity duration-500 ease-in-out"
+          />
+        </div>
+  
+        {/* Recipe content */}
+        <div className="px-5 py-4">
+          <div className="flex items-start justify-between mb-2">
+            <h2 className="text-lg font-semibold text-gray-900 leading-snug">{recipe_name}</h2>
             <button
               onClick={saved ? handleUnBookmark : handleBookmark}
               className="
-                inline-flex            /* shrink to content */
-                items-center           /* center icon vertically */
-                justify-center         /* center icon horizontally */
-                bg-white bg-opacity-75 
-                p-2                     /* padding for tap area */
-                rounded-full 
-                transform 
-                transition-all 
-                duration-300 
-                ease-out 
-                hover:scale-110         /* grow on hover */
-                hover:bg-opacity-100
-                shadow                  /* subtle default depth */
-                hover:shadow-lg         /* stronger hover depth */
+                bg-white bg-opacity-80 p-2 rounded-full 
+                transition transform duration-300 ease-out 
+                hover:scale-110 hover:bg-opacity-100 
+                shadow-sm hover:shadow-md
               "
             >
               {saved ? (
@@ -181,20 +176,31 @@ const RecipeElementFeed = ({
                 <CiBookmarkPlus className="text-gray-600 text-xl" />
               )}
             </button>
-            <h2 className="text-xl font-bold text-gray-900 ml-3">{recipe_name}</h2>
+          </div>
+  
+          <p className="text-gray-700 text-sm line-clamp-3">{recipe_description}</p>
+  
+          <div className="mt-4 flex flex-wrap items-center text-sm text-gray-500 gap-x-4 gap-y-2">
+            <span className="flex items-center">
+              <Utensils className="w-4 h-4 mr-1" /> {recipeType}
+            </span>
+            <span className="flex items-center">
+              <Clock className="w-4 h-4 mr-1" /> {cookingTime} mins
+            </span>
+            <span className="flex items-center">
+              {difficulty}
+            </span>
+            <span className="flex items-center">
+
+              Bookmarks : {bookmarks}
+              
+            </span>
           </div>
         </div>
-        <p className="mt-1 text-gray-700 line-clamp-3">{recipe_description}</p>
-        <div className="mt-3 flex flex-wrap items-center text-sm text-gray-500 gap-x-3 gap-y-1">
-          <span className="flex items-center"><Utensils className="w-4 h-4 mr-1" /> {recipeType}</span>
-          <span className="flex items-center"><Clock className="w-4 h-4 mr-1" /> {cookingTime} mins</span>
-          <span>{difficulty}</span>
-        </div>
       </div>
-    </div>
-  </Link>
+    </Link>
   );
+  
 };
 
 export default RecipeElementFeed;
-

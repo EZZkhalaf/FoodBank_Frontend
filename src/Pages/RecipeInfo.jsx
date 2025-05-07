@@ -690,6 +690,10 @@
 
 
 
+
+
+
+
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import NavBar from "../Components/NavBar";
@@ -703,6 +707,11 @@ import { RiCloseLargeLine } from "react-icons/ri";
 import { CircleLoader } from 'react-spinners';
 import { ImproveAction } from "@cloudinary/url-gen/actions/adjust/ImproveAction";
 import { ThreeDot } from "react-loading-indicators";
+import { CiBookmarkPlus } from "react-icons/ci";
+import { IoMdBookmark } from "react-icons/io";
+
+
+
 
 const RecipeInfo = () => {
   const { RecipeId } = useParams();
@@ -744,10 +753,11 @@ const RecipeInfo = () => {
 
       if (!response.ok) throw new Error('Request failed');
       const data = await response.json();
+      console.log(data)
       setIsBookmarked(data === 'saved');
     };
     checkBookmark();
-  }, [recipe]);
+  }, []);
 
   // Fetch recipe and user data
   useEffect(() => {
@@ -988,6 +998,50 @@ const RecipeInfo = () => {
   }
 
 
+
+  const handleBookmark = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (loading) return;
+
+    try {
+      const response = await fetch('http://localhost:3000/user/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentUserid: user._id, RecipeId })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      setIsBookmarked(true);
+    } catch (error) {
+      console.error("Error saving bookmark:", error);
+      setError(error.message);
+    } 
+  };
+
+  const handleUnBookmark = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (loading) return;
+
+    try {
+      const response = await fetch('http://localhost:3000/user/unsave', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentUserid: user._id, RecipeId })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      setIsBookmarked(false);
+    } catch (error) {
+      console.error("Error unsaving bookmark:", error);
+      setError(error.message);
+    } 
+  };
+
+
   if (loading)     
     return (
     <div className="flex items-center justify-center min-h-screen bg-white">
@@ -1121,15 +1175,31 @@ const RecipeInfo = () => {
                     </button>
                   </div>
                 ) : (
-                  <div>
-                      <BookmarkButton
-                        recipeId={RecipeId}
-                        userId={user._id}
-                        isBookmarked={isBookmarked}
-                        className="group-hover:animate-pulse-slow"
-                      />
-                      
-                  </div>
+
+
+
+                  <button
+                    onClick={isBookmarked ? handleUnBookmark : handleBookmark}
+                    className="
+                      flex items-center gap-2 bg-white bg-opacity-80 px-4 py-2 rounded-full 
+                      transition transform duration-300 ease-out 
+                      hover:scale-110 hover:bg-opacity-100 
+                      shadow-sm hover:shadow-md
+                    "
+                  >
+                    {isBookmarked ? (
+                      <>
+                        <IoMdBookmark className="text-blue-600 text-xl" />
+                        <span className="text-blue-600 font-medium">Bookmarked</span>
+                      </>
+                    ) : (
+                      <>
+                        <CiBookmarkPlus className="text-gray-600 text-xl" />
+                        <span className="text-gray-600 font-medium">Bookmark</span>
+                      </>
+                    )}
+                  </button>
+
                 )}
                 
                 <span className="text-white bg-gray-800/90 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
