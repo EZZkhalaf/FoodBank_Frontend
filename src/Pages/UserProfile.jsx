@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useRef, useState } from 'react';
 import { useAuthContext } from '../Context/AuthContext';
 import defaultPhoto from '../assets/defaultPhoto.png';
@@ -8,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import NavBar from '../Components/NavBar';
 import ProfileNavBar from '../Components/ProfileNavBar';
 import { ThreeDot } from 'react-loading-indicators';
+import UserFollowModal from '../Components/UserFollowModal';
 
 const UserProfile = () => {
   const { user, dispatch } = useAuthContext();
@@ -41,6 +44,32 @@ const UserProfile = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const next_page = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
   const previousPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
+
+  //for displaying the followers and following in a modal 
+  const [showModal , setShowModal] = useState(false);
+  const [modalUsers , setModalUsers] = useState([]);
+  const [modalTitle , setModalTitle] = useState("");
+  //for testing the design of the modal 
+  const sampleUsers = [
+    { _id: "1", name: "Alice", profilePic: "https://i.pravatar.cc/100?img=1" },
+    { _id: "2", name: "Bob", profilePic: "https://i.pravatar.cc/100?img=2" },
+  ];
+
+
+  const handleShowFollowers = () => {
+    setModalUsers(user.followers || []);
+    setModalTitle("Followers");
+    setShowModal(true);
+  };
+  
+  const handleShowFollowing = () => {
+    setModalUsers(user.following || []);
+    setModalTitle("Following");
+    setShowModal(true);
+  };
+
+
+
 
   // Helper function to determine which image to display
   const getProfileImage = () => {
@@ -97,23 +126,35 @@ const UserProfile = () => {
     }
   };
 
-  useEffect(() => {
-    if (!user?._id) return;
+  // in UserProfile.jsx
+const fetchUserData = async (id) => {
+  const res = await fetch('http://localhost:3000/user/getUserById', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId: id }),
+  });
+  if (!res.ok) throw new Error(res.statusText);
+  return res.json();
+};
 
-    const fetchUserData = async () => {
-      try {
-        const res = await fetch(`http://localhost:3000/user/${user._id}`);
-        const updatedUser = await res.json();
-        dispatch({ type: 'SET_USER', payload: updatedUser });
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
+useEffect(() => {
+  if (!user?._id) return;
 
-    fetchUserData();
-    const interval = setInterval(fetchUserData, 10000);
-    return () => clearInterval(interval);
-  }, [user?._id, dispatch]);
+  const refresh = async () => {
+    try {
+      const updated = await fetchUserData(user._id);
+      dispatch({ type: 'SET_USER', payload: updated });
+    } catch (err) {
+      console.error('Error fetching user data:', err);
+    }
+  };
+
+  refresh();
+  const id = setInterval(refresh, 40000);
+  return () => clearInterval(id);
+}, [user?._id, dispatch]);
+
+
 
   const handleProfilePicChange = (event) => {
     const file = event.target.files[0];
@@ -198,8 +239,7 @@ const UserProfile = () => {
     );
   };
 
-  if (loading)     
-    return (
+  if (loading) return (
     <div className="flex items-center justify-center min-h-screen bg-white">
       <div className="p-6 rounded-lg shadow-md bg-white border border-gray-200">
         <ThreeDot color={["#32cd32", "#327fcd", "#cd32cd", "#cd8032"]} />
@@ -297,20 +337,31 @@ const UserProfile = () => {
 
         {/* Social Stats */}
         <div className='grid grid-cols-3 gap-4 mt-8 text-center'>
-          <div className='p-4 bg-gray-50 rounded-lg'>
-            <p className='text-xl font-bold text-gray-800'>{followers?.length || 0}</p>
-            <p className='text-gray-600'>Followers</p>
-          </div>
-          <div className='p-4 bg-gray-50 rounded-lg'>
-            <p className='text-xl font-bold text-gray-800'>{following?.length || 0}</p>
-            <p className='text-gray-600'>Following</p>
-          </div>
-          <div className='p-4 bg-gray-50 rounded-lg'>
-            <p className='text-xl font-bold text-gray-800'>{ownRecipes?.length || 0}</p>
-            <p className='text-gray-600'>Recipes</p>
-          </div>
+            <div 
+              onClick={handleShowFollowers}
+              className='p-4 bg-gray-50 rounded-lg'>
+                <p className='text-xl font-bold text-gray-800'>{followers?.length || 0}</p>
+                <p className='text-gray-600'>Followers</p>
+            </div>
+            <div 
+            onClick={handleShowFollowing}
+              className='p-4 bg-gray-50 rounded-lg'>
+              <p className='text-xl font-bold text-gray-800'>{following?.length || 0}</p>
+              <p className='text-gray-600'>Following</p>
+            </div>
+            <div className='p-4 bg-gray-50 rounded-lg'>
+              <p className='text-xl font-bold text-gray-800'>{recipes?.length || 0}</p>
+              <p className='text-gray-600'>Recipes</p>
+            </div>
         </div>
 
+        {showModal && (
+          <UserFollowModal
+            users={modalUsers}
+            title={modalTitle}
+            onClose={() => setShowModal(false)}
+          />
+        )}
         {/* Divider */}
         <div className='flex justify-center items-center mt-10'>
           <div className="w-[40vw] border-t-2 border-sand-200"></div>

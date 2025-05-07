@@ -81,6 +81,10 @@ const SavedRecipes = () => {
             </Link>
           </div>
         ) : (
+ 
+
+
+
           <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-8 mt-12">
             {recipes.map((recipe) => (
               <SavedRecipeElement
@@ -88,10 +92,11 @@ const SavedRecipes = () => {
                 RecipeId={recipe._id}
                 recipe_image={recipe.recipe_image}
                 recipe_name={recipe.recipe_title}
-                removeRecipe={removeRecipe} // Pass removeRecipe function to child
+                removeRecipe={removeRecipe}
               />
             ))}
           </div>
+
         )}
       </div>
     </div>

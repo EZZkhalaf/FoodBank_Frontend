@@ -6,10 +6,12 @@ import NavBar from '../Components/NavBar';
 import Footer from '../Components/Footer';
 import { useAuthContext } from '../hooks/useAuthContext';
 import RecipeElement from '../Components/RecipeElement';
+import bgFoodImage from '../assets/bgFoodImage.jpg'
 import FeaturedRecipe from '../Components/FeaturedRecipe';
 import CategorySection from '../Components/CategorySection';  
 import { ThreeDot } from 'react-loading-indicators';
 import './HomeAnimation.css'
+import UserHomeFeed from '../Components/UserHomeFeed';
 
 const Home = () => {
   const { user } = useAuthContext();
@@ -115,33 +117,42 @@ if (error) {
 
 
 
-        <section 
-            ref={sectionRef}
-            className="relative h-[70vh] min-h-[600px] flex items-center justify-center bg-sand-50 bg-blur"
-          >
-            <div className="absolute inset-0 overflow-hidden">
-              <img
-                src="https://images.unsplash.com/photo-1499028344343-cd173ffc68a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                alt="Delicious food"
-                className="w-full h-full object-cover opacity-70"
-              />
-            </div>
+        <section
+          ref={sectionRef}
+          className="relative h-[70vh] min-h-[600px] flex items-center justify-center bg-sand-50"
+        >
+          {/* Background Image with Blur and Overlay */}
+          <div className="absolute inset-0 overflow-hidden">
+          <img
+            src={bgFoodImage}
+              alt="Delicious food"
+              className="w-full h-full object-cover "
+            />
 
-            <div className="relative z-10 text-center max-w-3xl mx-auto px-4 slide-up">
-              <h1 className="font-serif text-4xl md:text-6xl font-medium mb-6 fade-in">
-                Welcome back, {user.username}!
-              </h1>
-              <p className="text-xl md:text-2xl text-sand-700 mb-8 max-w-2xl mx-auto fade-in-delay">
-                Discover recipes that bring joy to your table, focusing on quality ingredients and straightforward techniques.
-              </p>
-              <Link
-                to="/findRecipes"
-                className="inline-block px-8 py-3 bg-spice-500 text-white rounded-lg text-base font-medium hover:bg-spice-600 transition-colors fade-in-delay"
-              >
-                Explore Recipes
-              </Link>
-            </div>
-          </section>
+            <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+          </div>
+
+          {/* Content */}
+          <div className="relative z-10 text-center max-w-3xl mx-auto px-4 animate-fade-up">
+            <h1 className="font-serif text-4xl md:text-6xl font-semibold text-white mb-6 drop-shadow-md">
+              Welcome back, {user.username}!
+            </h1>
+            <p className="text-lg md:text-2xl text-slate-100 mb-8 max-w-2xl mx-auto drop-shadow-sm">
+              Discover recipes that bring joy to your table, with quality ingredients and straightforward techniques.
+            </p>
+
+            {/* Explore Recipes Button */}
+            <Link
+              to="/findRecipes"
+              className="inline-block px-8 py-3 rounded-full bg-gradient-to-r from-spice-500 to-spice-600 
+                        text-white text-lg font-semibold shadow-lg hover:scale-105 hover:shadow-xl 
+                        transition-transform duration-300 ease-in-out"
+            >
+              Explore Recipes
+            </Link>
+          </div>
+        </section>
+
 
 
 
@@ -151,6 +162,10 @@ if (error) {
           <div className="animate-scroll">
             <FeaturedRecipe recipe={featuredRecipe} />
           </div>
+        </section>
+
+        <section className="page-container mt-5">
+          <UserHomeFeed />
         </section>
 
         {/* Category Sections */}

@@ -270,10 +270,7 @@ const Login = () => {
           </button>
         </form>
 
-        <button className="w-full border border-gray-400 p-3 rounded-lg flex items-center justify-center gap-2 font-semibold hover:bg-black hover:text-white transition">
-          <img src={googleLogo} alt="Google Logo" className="w-fit h-5" />
-          Sign in with Google
-        </button>
+
 
         <div className="text-center text-gray-400">
           Don't have an account?
