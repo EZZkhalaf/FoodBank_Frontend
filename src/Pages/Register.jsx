@@ -30,6 +30,7 @@ const Register = ({loadUser}) => {
             });
             let data ;
             data = await response.json();
+            console.log(data)
             if(data.message === 'Register successful!'){
             toast.success('account created successfully ' , {autoClose : 1500})
             setTimeout(() => navigate('/login'), 1500);
