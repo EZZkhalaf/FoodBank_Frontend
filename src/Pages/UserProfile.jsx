@@ -127,32 +127,32 @@ const UserProfile = () => {
   };
 
   // in UserProfile.jsx
-const fetchUserData = async (id) => {
-  const res = await fetch('http://localhost:3000/user/getUserById', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId: id }),
-  });
-  if (!res.ok) throw new Error(res.statusText);
-  return res.json();
-};
-
-useEffect(() => {
-  if (!user?._id) return;
-
-  const refresh = async () => {
-    try {
-      const updated = await fetchUserData(user._id);
-      dispatch({ type: 'SET_USER', payload: updated });
-    } catch (err) {
-      console.error('Error fetching user data:', err);
-    }
+  const fetchUserData = async (id) => {
+    const res = await fetch('http://localhost:3000/user/getUserById', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: id }),
+    });
+    if (!res.ok) throw new Error(res.statusText);
+    return res.json();
   };
 
-  refresh();
-  const id = setInterval(refresh, 40000);
-  return () => clearInterval(id);
-}, [user?._id, dispatch]);
+  useEffect(() => {
+    if (!user?._id) return;
+
+    const refresh = async () => {
+      try {
+        const updated = await fetchUserData(user._id);
+        dispatch({ type: 'SET_USER', payload: updated });
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+      }
+    };
+
+    refresh();
+    const id = setInterval(refresh, 40000);
+    return () => clearInterval(id);
+  }, [user?._id, dispatch]);
 
 
 
@@ -166,11 +166,13 @@ useEffect(() => {
     reader.readAsDataURL(file);
   };
 
+
   // Pagination component
   const Pagination = () => {
     if (totalPages <= 1) return null;
-
+    
     const maxDisplayedPages = 5;
+
     let startPage = Math.max(1, currentPage - Math.floor(maxDisplayedPages / 2));
     let endPage = startPage + maxDisplayedPages - 1;
 
@@ -238,6 +240,16 @@ useEffect(() => {
       </div>
     );
   };
+
+
+      useEffect(()=>{
+      window.scrollTo({
+        top:0 ,
+        behavior:'smooth'
+      });
+    },[Pagination])
+
+
 
   if (loading) return (
     <div className="flex items-center justify-center min-h-screen bg-white">

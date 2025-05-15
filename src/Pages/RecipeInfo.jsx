@@ -346,8 +346,7 @@ const RecipeInfo = () => {
   };
 
 
-  if (loading)     
-    return (
+  if (loading) return (
     <div className="flex items-center justify-center min-h-screen bg-white">
       <div className="p-6 rounded-lg shadow-md bg-white border border-gray-200">
         <ThreeDot color={["#32cd32", "#327fcd", "#cd32cd", "#cd8032"]} />
@@ -355,7 +354,7 @@ const RecipeInfo = () => {
     </div>
   );
   
-  if (!recipe)       return (
+  if (!recipe) return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="p-6 rounded-lg shadow-lg bg-white max-w-md w-full">
         <div className="text-center">
@@ -390,6 +389,9 @@ const RecipeInfo = () => {
       </div>
     </div>
   );
+
+
+  
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100">
     <NavBar className="sticky top-0 bg-white/90 backdrop-blur-md shadow-sm z-50" />
