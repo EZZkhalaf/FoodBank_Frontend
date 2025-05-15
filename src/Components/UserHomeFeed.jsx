@@ -4,6 +4,7 @@ import RecipeElement from './RecipeElement';
 import { useAuthContext } from '../Context/AuthContext';
 import { ThreeDot } from 'react-loading-indicators';
 import RecipeElementFeed from './RecipeElementFeed';
+import defaultPhoto from '../assets/defaultPhoto.png'
 
 const UserHomeFeed = () => {
  const { user } = useAuthContext(); // Import your auth context

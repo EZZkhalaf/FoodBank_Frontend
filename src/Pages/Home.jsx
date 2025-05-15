@@ -129,7 +129,7 @@ if (error) {
               className="w-full h-full object-cover "
             />
 
-            <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+            <div className="absolute inset-0  bg-opacity-10"></div>
           </div>
 
           {/* Content */}

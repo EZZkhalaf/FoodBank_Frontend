@@ -6,6 +6,7 @@ import { IoMdBookmark } from "react-icons/io";
 import { Clock, Utensils } from 'lucide-react';
 import { useAuthContext } from '../Context/AuthContext';
 import defaultRecipeImage from '../assets/defaultRecipeImage.jpg';
+import defaultPhoto from '../assets/defaultPhoto.png'
 
 const RecipeElementFeed = ({
   RecipeId,
@@ -61,6 +62,7 @@ const RecipeElementFeed = ({
 
         if (!response.ok) throw new Error(`Failed to fetch user data: ${response.statusText}`);
         const data = await response.json();
+        console.log(data)
         setRecipeOwner(data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -135,11 +137,23 @@ const RecipeElementFeed = ({
         {/* Header: Avatar + Username */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <div className="flex items-center">
+            {/* <img
+              src={recipeOwner.profilePic || defaultPhoto}
+              alt={`${recipeOwner?.username || 'User'} avatar`}
+              className="w-10 h-10 rounded-full object-cover shadow-sm"
+            /> */}
+
             <img
-              src={recipeOwner?.avatar || defaultRecipeImage}
+              src={
+                recipeOwner?.profilePic && /^data:image\/(png|jpe?g|gif|webp);base64,/.test(recipeOwner.profilePic)
+                  ? recipeOwner.profilePic
+                  : defaultPhoto
+              }
               alt={`${recipeOwner?.username || 'User'} avatar`}
               className="w-10 h-10 rounded-full object-cover shadow-sm"
             />
+
+
             <span className="ml-3 font-medium text-gray-800 text-base">
               {recipeOwner?.username || 'Unknown'}
             </span>

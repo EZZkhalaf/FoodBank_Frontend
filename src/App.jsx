@@ -13,6 +13,7 @@ import SavedRecipes from './Pages/SavedRecipes';
 import FindRecipes from './Pages/FindRecipes';
 import UserPage from './Pages/UserPage';
 import AddRecipe from './Pages/AddRecipe';
+import { ToastContainer } from 'react-toastify';
 
 const App = () => {
   const navigate = useNavigate();
@@ -72,6 +73,7 @@ const App = () => {
         <Route path='/userPage/:user2_id' element={<UserPage  />}/>
         <Route path='/addRecipe' element={<AddRecipe />} />
       </Routes>
+      <ToastContainer />
     </div>
   );
 }

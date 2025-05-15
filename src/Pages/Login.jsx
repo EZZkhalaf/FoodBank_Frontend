@@ -256,14 +256,14 @@ const Login = () => {
           </div>
 
           <div className="w-full text-right">
-            <span className="text-sm font-semibold text-gray-600 cursor-pointer hover:text-black">
+            {/* <span className="text-sm font-semibold text-gray-600 cursor-pointer hover:text-black">
               Forgot password?
-            </span>
+            </span> */}
           </div>
 
           <button
             type="submit"
-            className={`w-full bg-black text-white p-3 rounded-lg font-semibold hover:bg-white hover:text-black border border-black transition ${loading && 'opacity-50 cursor-not-allowed'}`}
+            className={`w-full bg-black mt-6 text-white p-3 rounded-lg font-semibold hover:bg-white hover:text-black border border-black transition ${loading && 'opacity-50 cursor-not-allowed'}`}
             disabled={loading}
           >
             {loading ? 'Signing in...' : 'Sign in'}
