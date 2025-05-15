@@ -233,6 +233,7 @@ import { Search } from "lucide-react";
 import { CgProfile } from "react-icons/cg";
 import { FaBookBookmark } from "react-icons/fa6";
 import { IoMdClose, IoMdMenu } from "react-icons/io";
+import { BsFillBasket2Fill } from "react-icons/bs";
 import UserElement from "./userElement";
 import logo from "../assets/logo.png";
 import { useAuthContext } from "../Context/AuthContext";
