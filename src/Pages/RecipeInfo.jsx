@@ -13,9 +13,7 @@ import { ImproveAction } from "@cloudinary/url-gen/actions/adjust/ImproveAction"
 import { ThreeDot } from "react-loading-indicators";
 import { CiBookmarkPlus } from "react-icons/ci";
 import { IoMdBookmark } from "react-icons/io";
-
-
-
+import defaultPhoto from '../assets/defaultPhoto.png';
 
 const RecipeInfo = () => {
   const { RecipeId } = useParams();
@@ -42,7 +40,7 @@ const RecipeInfo = () => {
   const fileInputRef = useRef(null);
 
   const [isImproving , setIsImproving ] = useState(false)
-
+// 
   // Check if recipe is bookmarked
   useEffect(() => {
     const checkBookmark = async () => {
@@ -391,7 +389,7 @@ const RecipeInfo = () => {
   );
 
 
-  
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100">
     <NavBar className="sticky top-0 bg-white/90 backdrop-blur-md shadow-sm z-50" />
@@ -537,11 +535,16 @@ const RecipeInfo = () => {
                 >
                   <div className="relative -mt-12 xs:-mt-0">
                     <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl rotate-45 overflow-hidden border-4 border-white shadow-lg">
-                      <img 
-                        src={recipeUser?.avatar || defaultRecipeImage} 
-                        alt="User avatar"
-                        className="w-full h-full object-cover -rotate-45 scale-125"
-                      />
+<img
+  src={
+    recipeUser.profilePic?.startsWith('data:image/')
+      ? recipeUser.profilePic
+      : defaultPhoto
+  }
+  alt="User avatar"
+  className="w-full h-full object-cover -rotate-45 scale-125"
+/>
+
                     </div>
    
                   </div>
@@ -812,7 +815,3 @@ const RecipeInfo = () => {
 };
 
 export default RecipeInfo;
-
-
-
-

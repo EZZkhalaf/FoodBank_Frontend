@@ -60,7 +60,7 @@ const Register = ({loadUser}) => {
     <div className="flex items-center justify-center min-h-screen">
       <div className="relative flex flex-col p-8 m-6 space-y-6 bg-white shadow-2xl rounded-2xl w-96">
         <span className="mb-3 text-4xl font-bold">Welcome...</span>
-        <span className="font-light text-gray-500">Please enter your email and password</span>
+        <span className="font-light text-gray-500">Create you account here </span>
 
         <div className="w-full">
           <label className="mb-2 text-md font-medium">User name</label>
